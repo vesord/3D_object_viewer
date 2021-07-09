@@ -54,7 +54,7 @@ $(OBJ_DIRECTORIES):
 	@mkdir -p $(OBJ_DIRECTORIES)
 
 $(NAME): $(LIBS) $(OBJECTS)
-	@$(CC) $(FLAGS) $(OBJECTS) $(addprefix -L./, $(LIBS_PATH)) $(addprefix -l, $(LIBS_LINK)) -o $(NAME)
+	$(CC) $(FLAGS) $(OBJECTS) $(addprefix -L./, $(LIBS_PATH)) $(addprefix -l, $(LIBS_LINK)) -o $(NAME)
 
 $(OBJECTS) : $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	@/bin/echo -n $<
@@ -68,7 +68,7 @@ $(LIB_GLFW):
 
 $(LIB_GLEW):
 	unzip $(LIB_GLEW).zip
-	cd $(LIB_GLEW) && make
+	cd $(LIB_GLEW) && make glew.lib.static
 
 .PHONY: clean
 clean:
