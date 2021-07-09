@@ -1,5 +1,7 @@
 cmake-build-debug
 glfw-3.3.4
-glfw-3.3.4.zip
+glew-2.2.0
 .idea
-glfwLib
+bin
+scop
+
