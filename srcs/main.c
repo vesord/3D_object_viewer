@@ -86,103 +86,103 @@ int main()
 		0.0f, 0.0f, 1.0f
 	};
 
-	GLfloat verticesPrismColored[] = {
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-
-		0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-	};
+//	GLfloat verticesPrismColored[] = {
+//		0.25f,  0.25f, -1.25f, 1.0f,
+//		0.25f, -0.25f, -1.25f, 1.0f,
+//		-0.25f,  0.25f, -1.25f, 1.0f,
+//
+//		0.25f, -0.25f, -1.25f, 1.0f,
+//		-0.25f, -0.25f, -1.25f, 1.0f,
+//		-0.25f,  0.25f, -1.25f, 1.0f,
+//
+//		0.25f,  0.25f, -2.75f, 1.0f,
+//		-0.25f,  0.25f, -2.75f, 1.0f,
+//		0.25f, -0.25f, -2.75f, 1.0f,
+//
+//		0.25f, -0.25f, -2.75f, 1.0f,
+//		-0.25f,  0.25f, -2.75f, 1.0f,
+//		-0.25f, -0.25f, -2.75f, 1.0f,
+//
+//		-0.25f,  0.25f, -1.25f, 1.0f,
+//		-0.25f, -0.25f, -1.25f, 1.0f,
+//		-0.25f, -0.25f, -2.75f, 1.0f,
+//
+//		-0.25f,  0.25f, -1.25f, 1.0f,
+//		-0.25f, -0.25f, -2.75f, 1.0f,
+//		-0.25f,  0.25f, -2.75f, 1.0f,
+//
+//		0.25f,  0.25f, -1.25f, 1.0f,
+//		0.25f, -0.25f, -2.75f, 1.0f,
+//		0.25f, -0.25f, -1.25f, 1.0f,
+//
+//		0.25f,  0.25f, -1.25f, 1.0f,
+//		0.25f,  0.25f, -2.75f, 1.0f,
+//		0.25f, -0.25f, -2.75f, 1.0f,
+//
+//		0.25f,  0.25f, -2.75f, 1.0f,
+//		0.25f,  0.25f, -1.25f, 1.0f,
+//		-0.25f,  0.25f, -1.25f, 1.0f,
+//
+//		0.25f,  0.25f, -2.75f, 1.0f,
+//		-0.25f,  0.25f, -1.25f, 1.0f,
+//		-0.25f,  0.25f, -2.75f, 1.0f,
+//
+//		0.25f, -0.25f, -2.75f, 1.0f,
+//		-0.25f, -0.25f, -1.25f, 1.0f,
+//		0.25f, -0.25f, -1.25f, 1.0f,
+//
+//		0.25f, -0.25f, -2.75f, 1.0f,
+//		-0.25f, -0.25f, -2.75f, 1.0f,
+//		-0.25f, -0.25f, -1.25f, 1.0f,
+//
+//		0.0f, 0.0f, 1.0f, 1.0f,
+//		0.0f, 0.0f, 1.0f, 1.0f,
+//		0.0f, 0.0f, 1.0f, 1.0f,
+//
+//		0.0f, 0.0f, 1.0f, 1.0f,
+//		0.0f, 0.0f, 1.0f, 1.0f,
+//		0.0f, 0.0f, 1.0f, 1.0f,
+//
+//		0.8f, 0.8f, 0.8f, 1.0f,
+//		0.8f, 0.8f, 0.8f, 1.0f,
+//		0.8f, 0.8f, 0.8f, 1.0f,
+//
+//		0.8f, 0.8f, 0.8f, 1.0f,
+//		0.8f, 0.8f, 0.8f, 1.0f,
+//		0.8f, 0.8f, 0.8f, 1.0f,
+//
+//		0.0f, 1.0f, 0.0f, 1.0f,
+//		0.0f, 1.0f, 0.0f, 1.0f,
+//		0.0f, 1.0f, 0.0f, 1.0f,
+//
+//		0.0f, 1.0f, 0.0f, 1.0f,
+//		0.0f, 1.0f, 0.0f, 1.0f,
+//		0.0f, 1.0f, 0.0f, 1.0f,
+//
+//		0.5f, 0.5f, 0.0f, 1.0f,
+//		0.5f, 0.5f, 0.0f, 1.0f,
+//		0.5f, 0.5f, 0.0f, 1.0f,
+//
+//		0.5f, 0.5f, 0.0f, 1.0f,
+//		0.5f, 0.5f, 0.0f, 1.0f,
+//		0.5f, 0.5f, 0.0f, 1.0f,
+//
+//		1.0f, 0.0f, 0.0f, 1.0f,
+//		1.0f, 0.0f, 0.0f, 1.0f,
+//		1.0f, 0.0f, 0.0f, 1.0f,
+//
+//		1.0f, 0.0f, 0.0f, 1.0f,
+//		1.0f, 0.0f, 0.0f, 1.0f,
+//		1.0f, 0.0f, 0.0f, 1.0f,
+//
+//		0.0f, 1.0f, 1.0f, 1.0f,
+//		0.0f, 1.0f, 1.0f, 1.0f,
+//		0.0f, 1.0f, 1.0f, 1.0f,
+//
+//		0.0f, 1.0f, 1.0f, 1.0f,
+//		0.0f, 1.0f, 1.0f, 1.0f,
+//		0.0f, 1.0f, 1.0f, 1.0f,
+//	};
 
 	// Create vertex array object VAO
 	GLuint VAO;
@@ -204,7 +204,7 @@ int main()
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesPrismColored), verticesPrismColored, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesTriangleColored), verticesTriangleColored, GL_STATIC_DRAW);
 
 	// Say OpenGL how to interpret verticesTriangle data
 	// 0 - shader argument (check vert shader layout (location = 0)
@@ -214,8 +214,8 @@ int main()
 	// (GLvoid*) 0 - offset in buffer
 	glEnableVertexAttribArray(0); // Attrib number = 0
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*) 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(sizeof(verticesPrismColored) / 2));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*) 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(sizeof(verticesTriangleColored) / 2));
 	glBindVertexArray(0);
 
 	// WORK WITH SHADERS
@@ -224,11 +224,11 @@ int main()
 
 	// MAKE UNIFORM VARIABLES
 
-//	GLint elapsedTimeUniform = glGetUniformLocation(shaderProgram, "time");
-	GLint offsetUniform = glGetUniformLocation(shaderProgram, "offset");
-	GLint frustumScaleUnif = glGetUniformLocation(shaderProgram, "frustumScale");
-	GLint zNearUnif = glGetUniformLocation(shaderProgram, "zNear");
-	GLint zFarUnif = glGetUniformLocation(shaderProgram, "zFar");
+	GLint elapsedTimeUniform = glGetUniformLocation(shaderProgram, "time");
+//	GLint offsetUniform = glGetUniformLocation(shaderProgram, "offset");
+//	GLint frustumScaleUnif = glGetUniformLocation(shaderProgram, "frustumScale");
+//	GLint zNearUnif = glGetUniformLocation(shaderProgram, "zNear");
+//	GLint zFarUnif = glGetUniformLocation(shaderProgram, "zFar");
 
 	// DISPLAY LOOP
 
@@ -246,19 +246,19 @@ int main()
 		glUseProgram(shaderProgram);
 
 		// Setting uniform
-//		glUniform1f(elapsedTimeUniform, (float)glfwGetTime());
-		glUniform2f(offsetUniform, 0.5f, 0.5f);
-		glUniform1f(frustumScaleUnif, 1.f);
-		glUniform1f(zNearUnif, 1.f);
-		glUniform1f(zFarUnif, 3.f);
+		glUniform1f(elapsedTimeUniform, (float)glfwGetTime());
+//		glUniform2f(offsetUniform, 0.5f, 0.5f);
+//		glUniform1f(frustumScaleUnif, 1.f);
+//		glUniform1f(zNearUnif, 1.f);
+//		glUniform1f(zFarUnif, 3.f);
 
 		// We are using our VAO for figure
 		glBindVertexArray(VAO);
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-//		glUniform1f(elapsedTimeUniform, (float)glfwGetTime() + 2.5f);
-//		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUniform1f(elapsedTimeUniform, (float)glfwGetTime() + 2.5f);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
 	}

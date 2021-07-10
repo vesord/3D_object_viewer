@@ -90,13 +90,15 @@ GLuint makeTestShaderProgram() {
 	if (!shaderList) {
 		exit(1);
 	}
-	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcManualPerspective);
-	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
+	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcColorPassRotation);
+	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColorChange);
 	shaderList[2] = 0;
 
 	GLuint shaderProgram = CreateShaderProgram(shaderList);
 
+	GLint loopDurationUniform = glGetUniformLocation(shaderProgram, "loopDuration");
 	glUseProgram(shaderProgram);
+	glUniform1f(loopDurationUniform, 5.0f);
 	glUseProgram(0);
 	free(shaderList);
 	return shaderProgram;
