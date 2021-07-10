@@ -224,12 +224,6 @@ int main()
 
 	// MAKE UNIFORM VARIABLES
 
-//	GLint elapsedTimeUniform = glGetUniformLocation(shaderProgram, "time");
-	GLint offsetUniform = glGetUniformLocation(shaderProgram, "offset");
-	GLint frustumScaleUnif = glGetUniformLocation(shaderProgram, "frustumScale");
-	GLint zNearUnif = glGetUniformLocation(shaderProgram, "zNear");
-	GLint zFarUnif = glGetUniformLocation(shaderProgram, "zFar");
-
 	// DISPLAY LOOP
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -247,10 +241,7 @@ int main()
 
 		// Setting uniform
 //		glUniform1f(elapsedTimeUniform, (float)glfwGetTime());
-		glUniform2f(offsetUniform, 0.5f, 0.5f);
-		glUniform1f(frustumScaleUnif, 1.f);
-		glUniform1f(zNearUnif, 1.f);
-		glUniform1f(zFarUnif, 3.f);
+
 
 		// We are using our VAO for figure
 		glBindVertexArray(VAO);
