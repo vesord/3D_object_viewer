@@ -95,24 +95,12 @@ GLuint makeTestShaderProgram() {
 	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
 	shaderList[2] = 0;
 
-	float frustumScale = 1.f; float zFar = 3.f; float zNear = 1.f;
-	float perspectiveMatrix[16];
-	memset(perspectiveMatrix, 0, sizeof(float) * 16);
-
-	perspectiveMatrix[0] = frustumScale;
-	perspectiveMatrix[5] = frustumScale;
-	perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
-	perspectiveMatrix[11] = -1.f;
-	perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
-
 	GLuint shaderProgram = CreateShaderProgram(shaderList);
 
-	GLint perspectiveMatrixUnif = glGetUniformLocation(shaderProgram, "perspectiveMatrix");
-	GLint offsetUnif = glGetUniformLocation(shaderProgram, "offset");
+
 
 	glUseProgram(shaderProgram);
-	glUniform2f(offsetUnif, 1.0f, 1.0f);
-	glUniformMatrix4fv(perspectiveMatrixUnif, 1, GL_FALSE, perspectiveMatrix);
+
 	glUseProgram(0);
 	free(shaderList);
 	return shaderProgram;

@@ -4,10 +4,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 float ft_randf() {
 	return (float)rand() / (float)INT32_MAX;
 }
+
+float frustumScale = 1.f; float zFar = 3.f; float zNear = 1.f;
+float perspectiveMatrix[16];
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	if (key == GLFW_KEY_C) {
@@ -22,6 +26,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (key == GLFW_KEY_S) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+}
+
+void reshape_callback(GLFWwindow* window, int w, int h) {
+	(void)window;
+	perspectiveMatrix[0] = frustumScale / ((float)w / (float)h);
+	perspectiveMatrix[5] = frustumScale;
+
+	glViewport(0, 0, w, h);
 }
 
 void initialization() {
@@ -39,7 +51,7 @@ void initialization() {
 	// Something for macOS ??
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	//Выключение возможности изменения размера окна
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 }
 
@@ -73,6 +85,7 @@ int main()
 	// DO CALLBACK
 
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetWindowSizeCallback(window, reshape_callback);
 
 	// WORK WITH BUFFERS
 
@@ -194,6 +207,11 @@ int main()
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CW);
 
+	// Setting up Depth test
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.f, 1.f);
+
 /*	// Making element buffer object
 	GLuint EBO;
 	glGenBuffers(1, &EBO);
@@ -224,13 +242,25 @@ int main()
 
 	// MAKE UNIFORM VARIABLES
 
+	memset(perspectiveMatrix, 0, sizeof(float) * 16);
+
+	perspectiveMatrix[0] = frustumScale;
+	perspectiveMatrix[5] = frustumScale;
+	perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
+	perspectiveMatrix[11] = -1.f;
+	perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+
+	GLint perspectiveMatrixUnif = glGetUniformLocation(shaderProgram, "perspectiveMatrix");
+	GLint offsetUnif = glGetUniformLocation(shaderProgram, "offset");
+
 	// DISPLAY LOOP
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearDepth(1.f);
 	while(!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Calculating offsets
 //		float fXOffset = 0.f, fYOffset = 0.f;
@@ -238,13 +268,17 @@ int main()
 
 		// We are using our shader program
 		glUseProgram(shaderProgram);
-
+		glUniformMatrix4fv(perspectiveMatrixUnif, 1, GL_FALSE, perspectiveMatrix);
+		glUniform2f(offsetUnif, .3f, .3f);
 		// Setting uniform
 //		glUniform1f(elapsedTimeUniform, (float)glfwGetTime());
 
 
 		// We are using our VAO for figure
 		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glUniform2f(offsetUnif, 1.0f, 1.0f);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
