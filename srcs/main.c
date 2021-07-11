@@ -116,7 +116,7 @@ void RegisterCallbacks() {
 // Initializations
 
 void scopCreateWindow() {
-	window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+	window = glfwCreateWindow(800, 800, "LearnOpenGL", NULL, NULL);
 	if (window == NULL)
 	{
 		printf("Failed to create GLFW window\n");
@@ -199,6 +199,57 @@ GLuint makeTestShaderProgram() {
 	return shaderProgram;
 }
 
+void StationaryOffset() {
+	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
+
+	// Identity matrix
+	modelToCameraMatrix[0] = 1.f;
+	modelToCameraMatrix[5] = 1.f;
+	modelToCameraMatrix[10] = 1.f;
+	modelToCameraMatrix[15] = 1.f;
+
+	// Stationary offset
+	modelToCameraMatrix[14] = -20.f;
+}
+
+void OvalOffset(float elapsedTime) {
+	const float loopDuration = 3.f;
+	const float scale = 3.141592f * 2.f / loopDuration;
+
+	float curTimeInLoop = fmodf(elapsedTime, loopDuration);
+
+	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
+
+	// Identity matrix
+	modelToCameraMatrix[0] = 1.f;
+	modelToCameraMatrix[5] = 1.f;
+	modelToCameraMatrix[10] = 1.f;
+	modelToCameraMatrix[15] = 1.f;
+
+	modelToCameraMatrix[12] = cosf(curTimeInLoop * scale) * 4.f;
+	modelToCameraMatrix[13] = sinf(curTimeInLoop * scale) * 6.f;
+	modelToCameraMatrix[14] = -20.f;
+}
+
+void BottomCircleOffset(float elapsedTime) {
+	const float loopDuration = 12.f;
+	const float scale = 3.141592f * 2.f / loopDuration;
+
+	float curTimeInLoop = fmodf(elapsedTime, loopDuration);
+
+	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
+
+	// Identity matrix
+	modelToCameraMatrix[0] = 1.f;
+	modelToCameraMatrix[5] = 1.f;
+	modelToCameraMatrix[10] = 1.f;
+	modelToCameraMatrix[15] = 1.f;
+
+	modelToCameraMatrix[12] = cosf(curTimeInLoop * scale) * 5.f;
+	modelToCameraMatrix[13] = -3.5f;
+	modelToCameraMatrix[14] = sinf(curTimeInLoop * scale) * 6.f - 20.f;
+}
+
 int main()
 {
 	Initialization();
@@ -233,20 +284,7 @@ int main()
 	glUniformMatrix4fv(cameraToClipMatrixUnif, 1, GL_FALSE, cameraToClipMatrix);
 	glUseProgram(0);
 
-	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
-
-	// Identity matrix
-	modelToCameraMatrix[0] = 1.f;
-	modelToCameraMatrix[5] = 1.f;
-	modelToCameraMatrix[10] = 1.f;
-	modelToCameraMatrix[15] = 1.f;
-
-	// Stationary offset
-	modelToCameraMatrix[12] = 3.f;
-	modelToCameraMatrix[14] = -20.f;
-
 	glUseProgram(shaderProgram);
-	glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
 	glUseProgram(shaderProgram);
 	// DISPLAY LOOP
 
@@ -257,15 +295,22 @@ int main()
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// We are using our shader program
-		glUseProgram(shaderProgram);
-
-		// Bind vao
 		glBindVertexArray(vao);
 
-		// Pass the uniforms
+		glUseProgram(shaderProgram);
 
+		StationaryOffset();
+		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
 		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+
+		OvalOffset((float)glfwGetTime());
+		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
+		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+
+		BottomCircleOffset((float)glfwGetTime());
+		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
+		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+
 //		glDrawArrays(GL_TRIANGLES, 0, numberOfVertices);
 
 		glBindVertexArray(0);
