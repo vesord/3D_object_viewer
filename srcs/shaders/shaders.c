@@ -3,8 +3,8 @@
 //
 
 #include "scop.h"
-#include "vertexShaders.h"
-#include "fragmentShaders.h"
+//#include "vertexShaders.h"
+//#include "fragmentShaders.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -80,28 +80,5 @@ GLuint CreateShaderProgram(GLuint *shaderList) {
 		glDeleteShader(*shaderListIter);
 		++shaderListIter;
 	}
-	return shaderProgram;
-}
-
-/// TEST FUNCTION
-GLuint makeTestShaderProgram() {
-	GLuint *shaderList;
-
-	shaderList = malloc(sizeof(GLuint) * 3);
-	if (!shaderList) {
-		exit(1);
-	}
-	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcManualPerspective);
-	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
-	shaderList[2] = 0;
-
-	GLuint shaderProgram = CreateShaderProgram(shaderList);
-
-
-
-	glUseProgram(shaderProgram);
-
-	glUseProgram(0);
-	free(shaderList);
 	return shaderProgram;
 }

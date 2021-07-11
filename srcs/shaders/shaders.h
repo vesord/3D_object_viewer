@@ -9,4 +9,11 @@
 
 GLuint makeTestShaderProgram();	/// TEST FUNCTION
 
+// Defs for moving makeShaderProgram to main.c
+#include "vertexShaders.h"
+#include "fragmentShaders.h"
+GLuint CreateShaderProgram(GLuint *shaderList);
+GLuint CreateShader(GLenum eShaderType, const GLchar** strShaderFile);
+
+
 #endif //SCOP_SHADERS_H

@@ -1,24 +1,92 @@
 #include "scop.h"
 #include "shaders.h"
-#include "calculations.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 float ft_randf() {
 	return (float)rand() / (float)INT32_MAX;
 }
 
-float frustumScale = 1.f; float zFar = 3.f; float zNear = 1.f;
-float perspectiveMatrix[16];
+// Object data
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+const int numberOfVertices = 8;
+
+#define GREEN_COLOR 0.0f, 1.0f, 0.0f, 1.0f
+#define BLUE_COLOR 	0.0f, 0.0f, 1.0f, 1.0f
+#define RED_COLOR 1.0f, 0.0f, 0.0f, 1.0f
+#define GREY_COLOR 0.8f, 0.8f, 0.8f, 1.0f
+#define BROWN_COLOR 0.5f, 0.5f, 0.0f, 1.0f
+
+const float vertexData[] =
+	{
+		+1.0f, +1.0f, +1.0f,
+		-1.0f, -1.0f, +1.0f,
+		-1.0f, +1.0f, -1.0f,
+		+1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		+1.0f, +1.0f, -1.0f,
+		+1.0f, -1.0f, +1.0f,
+		-1.0f, +1.0f, +1.0f,
+
+		GREEN_COLOR,
+		BLUE_COLOR,
+		RED_COLOR,
+		BROWN_COLOR,
+
+		GREEN_COLOR,
+		BLUE_COLOR,
+		RED_COLOR,
+		BROWN_COLOR,
+	};
+
+const GLshort indexData[] =
+	{
+		0, 1, 2,
+		1, 0, 3,
+		2, 3, 0,
+		3, 2, 1,
+
+		5, 4, 6,
+		4, 5, 7,
+		7, 6, 4,
+		6, 7, 5,
+	};
+
+// Window
+GLFWwindow* window;
+
+// Buffers/Arrays
+GLuint vertexBufferObject;
+GLuint indexBufferObject;
+GLuint vao;
+
+// Shaders
+GLuint shaderProgram;
+
+// Perspective settings
+float CalcFrustumScale(float fFovDeg) {
+	const float degToRad = 3.14159f * 2.0f / 360.0f;
+	float fFovRad = fFovDeg * degToRad;
+	return 1.0f / tanf(fFovRad / 2.0f);
+}
+
+float zFar; float zNear; float fovDeg; float frustumScale;
+float cameraToClipMatrix[16];
+GLint cameraToClipMatrixUnif;
+float modelToCameraMatrix[16];
+GLint modelToCameraMatrixUnif;
+
+// Callbacks
+void key_callback(GLFWwindow* w, int key, int scancode, int action, int mode) {
 	if (key == GLFW_KEY_C) {
 		glClearColor(ft_randf(), ft_randf(), ft_randf(), 1.0f);
 	}
 	else if (key == GLFW_KEY_ESCAPE) {
-		glfwSetWindowShouldClose(window, GL_TRUE);
+		glfwSetWindowShouldClose(w, GL_TRUE);
 	}
 	else if (key == GLFW_KEY_L) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -28,179 +96,64 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
-void reshape_callback(GLFWwindow* window, int w, int h) {
-	(void)window;
-	perspectiveMatrix[0] = frustumScale / ((float)w / (float)h);
-	perspectiveMatrix[5] = frustumScale;
+void reshape_callback(GLFWwindow* w, int width, int height) {
+	(void)w;
+	cameraToClipMatrix[0] = frustumScale / ((float)width / (float)height);
+	cameraToClipMatrix[5] = frustumScale;
 
-	glViewport(0, 0, w, h);
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(cameraToClipMatrixUnif, 1, GL_FALSE, cameraToClipMatrix);
+	glUseProgram(0);
+
+	glViewport(0, 0, width, height);
 }
 
-void initialization() {
-	//Инициализация GLFW
-	glfwInit();
-	//Настройка GLFW
-	//Задается минимальная требуемая версия OpenGL.
-	//Мажорная
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	//Минорная
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	//Установка профайла для которого создается контекст
-	// CORE_PROFILE will cause errors during calls to deprecated functions
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// Something for macOS ??
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	//Выключение возможности изменения размера окна
-	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-
+void RegisterCallbacks() {
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetWindowSizeCallback(window, reshape_callback);
 }
 
-int main()
-{
-	initialization();
+// Initializations
 
-	// DO WINDOW
-
-	GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+void scopCreateWindow() {
+	window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
 	if (window == NULL)
 	{
 		printf("Failed to create GLFW window\n");
 		glfwTerminate();
-		return -1;
+		exit(1);
 	}
 	glfwMakeContextCurrent(window);
+}
 
+void Initialization() {
+	// Init glfw
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // CORE_PROFILE will cause errors during calls to deprecated functions
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Something for macOS TODO: check what is this
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+
+	// Create window
+	scopCreateWindow();
+
+	// Init glew
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
 		printf("Failed to create GLEW window\n");
-		return -1;
+		exit(1);
 	}
 
+	// Init viewport
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
-
 	glViewport(0, 0, width, height);
 
-	// DO CALLBACK
-
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetWindowSizeCallback(window, reshape_callback);
-
-	// WORK WITH BUFFERS
-
-	// Square with indexes VAO1
-	GLfloat verticesTriangleColored[] = {
-		0.0f,  0.5f, 0.0f,
-		0.5f, -0.366f, 0.0f,
-		-0.5f, -0.366f, 0.0f,
-		1.0f,  0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f
-	};
-
-	GLfloat verticesPrismColored[] = {
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-
-		0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-	};
-
-	// Create vertex array object VAO
-	GLuint VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	// Init frustum
+	zNear = 1.f; zFar = 45.f; fovDeg = 45.f;
+	frustumScale = CalcFrustumScale(fovDeg);
 
 	// Setting up culling
 	glEnable(GL_CULL_FACE);
@@ -211,79 +164,110 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthRange(0.f, 1.f);
+}
 
-/*	// Making element buffer object
-	GLuint EBO;
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesPrismColored), indicesPrismColored, GL_STATIC_DRAW);*/
+void InitBuffers() {
+	glGenBuffers(1, &vertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// Create verticesTriangle buffer object
-	GLuint VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesPrismColored), verticesPrismColored, GL_STATIC_DRAW);
+	glGenBuffers(1, &indexBufferObject);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexData), indexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 
-	// Say OpenGL how to interpret verticesTriangle data
-	// 0 - shader argument (check vert shader layout (location = 0)
-	// 3 - size of argument of shader
-	// GL_FALSE - no normalize
-	// 3 * sizeof(GLfloat) - step on data
-	// (GLvoid*) 0 - offset in buffer
-	glEnableVertexAttribArray(0); // Attrib number = 0
+/// TEST FUNCTION
+GLuint makeTestShaderProgram() {
+	GLuint *shaderList;
+
+	shaderList = malloc(sizeof(GLuint) * 3);
+	if (!shaderList) {
+		exit(1);
+	}
+	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcModelCameraClipTransform);
+	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
+	shaderList[2] = 0;
+
+	shaderProgram = CreateShaderProgram(shaderList);
+
+	glUseProgram(shaderProgram);
+
+	glUseProgram(0);
+	free(shaderList);
+	return shaderProgram;
+}
+
+int main()
+{
+	Initialization();
+	RegisterCallbacks();
+	shaderProgram = makeTestShaderProgram();
+	InitBuffers();
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	size_t colorDataOffset = sizeof(float) * 3 * numberOfVertices;
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*) 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(sizeof(verticesPrismColored) / 2));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorDataOffset);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 	glBindVertexArray(0);
-
-	// WORK WITH SHADERS
-
-	GLuint shaderProgram = makeTestShaderProgram();
 
 	// MAKE UNIFORM VARIABLES
 
-	memset(perspectiveMatrix, 0, sizeof(float) * 16);
+	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "cameraToClipMatrix");
+	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "modelToCameraMatrix");
 
-	perspectiveMatrix[0] = frustumScale;
-	perspectiveMatrix[5] = frustumScale;
-	perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
-	perspectiveMatrix[11] = -1.f;
-	perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+	memset(cameraToClipMatrix, 0, sizeof(float) * 16);
+	cameraToClipMatrix[0] = frustumScale;
+	cameraToClipMatrix[5] = frustumScale;
+	cameraToClipMatrix[10] = (zFar + zNear) / (zNear - zFar);
+	cameraToClipMatrix[11] = -1.f;
+	cameraToClipMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(cameraToClipMatrixUnif, 1, GL_FALSE, cameraToClipMatrix);
+	glUseProgram(0);
 
-	GLint perspectiveMatrixUnif = glGetUniformLocation(shaderProgram, "perspectiveMatrix");
-	GLint offsetUnif = glGetUniformLocation(shaderProgram, "offset");
+	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
 
+	// Identity matrix
+	modelToCameraMatrix[0] = 1.f;
+	modelToCameraMatrix[5] = 1.f;
+	modelToCameraMatrix[10] = 1.f;
+	modelToCameraMatrix[15] = 1.f;
+
+	// Stationary offset
+	modelToCameraMatrix[12] = 3.f;
+	modelToCameraMatrix[14] = -20.f;
+
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
+	glUseProgram(shaderProgram);
 	// DISPLAY LOOP
 
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClearDepth(1.f);
 	while(!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Calculating offsets
-//		float fXOffset = 0.f, fYOffset = 0.f;
-//		ComputeRotationOffsets(&fXOffset, &fYOffset);
-
 		// We are using our shader program
 		glUseProgram(shaderProgram);
-		glUniformMatrix4fv(perspectiveMatrixUnif, 1, GL_FALSE, perspectiveMatrix);
-		glUniform2f(offsetUnif, .3f, .3f);
-		// Setting uniform
-//		glUniform1f(elapsedTimeUniform, (float)glfwGetTime());
 
+		// Bind vao
+		glBindVertexArray(vao);
 
-		// We are using our VAO for figure
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// Pass the uniforms
 
-		glUniform2f(offsetUnif, 1.0f, 1.0f);
+		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+//		glDrawArrays(GL_TRIANGLES, 0, numberOfVertices);
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-//		glUniform1f(elapsedTimeUniform, (float)glfwGetTime() + 2.5f);
-//		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
 	}
