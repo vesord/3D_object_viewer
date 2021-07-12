@@ -4,4 +4,7 @@ glew-2.2.0
 .idea
 bin
 scop
+a.out
+models
+test*
 
