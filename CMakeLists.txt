@@ -25,10 +25,11 @@ set(DISPLAY_FILES)
 set(EVENTS_FILES)
 set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/parsing_private.h
-					srcs/parsing/parseObj.c
-					srcs/parsing/parsingUtils.c
+					srcs/parsing/parse_obj.c
+					srcs/parsing/parsing_utils.c
 					srcs/parsing/line_type_parsers.c
-					srcs/parsing/saving_buffers.c)
+					srcs/parsing/saving_buffers.c
+					srcs/parsing/fill_output_buffers.c)
 set(SHADERS_FILES   srcs/shaders/shaders.h
 					srcs/shaders/shaders.c)
 

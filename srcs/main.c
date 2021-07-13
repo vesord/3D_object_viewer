@@ -1,5 +1,6 @@
 #include "scop.h"
 #include "shaders.h"
+#include "parsing.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -252,6 +253,8 @@ void BottomCircleOffset(float elapsedTime) {
 
 int main()
 {
+	t_obj_data *obj = parse_obj_file("./models/cube.obj");
+
 	Initialization();
 	RegisterCallbacks();
 	shaderProgram = makeTestShaderProgram();

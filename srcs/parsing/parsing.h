@@ -3,15 +3,17 @@
 
 #include "scop.h"
 
-typedef struct	s_objFile {
-	float	*vertexBufferData;
-	int		*indexBufferData;
-	int		hasTextures;
-	int		hasNormals;
-	size_t	indexCount;
-	size_t	vertexCount;
-	t_err	wasError;
-}				t_obj_file;
+typedef struct	s_obj_file {
+	float	*vertex_buffer_data;
+	int		*index_buffer_data;
+	size_t	index_count;
+	size_t	vertex_count;
+	int		has_textures;
+	int		has_normals;
+	t_err	err_type;
+}				t_obj_data;
+
+t_obj_data *parse_obj_file(const char *filename);
 
 #endif
 

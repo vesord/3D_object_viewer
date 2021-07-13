@@ -1,49 +1,59 @@
 #include "parsing_private.h"
+#include <string.h>
 
-void save_vertex(t_vec4f vertex, t_obj_file *of)
+static void	realloc_if_need(t_buf *buf)
 {
-	if (of->vertex_buffer_data == NULL)
+	static const size_t	initial_size = 1024;
+
+	if (buf->data == NULL)
 	{
-		of->vertex_buffer_data = malloc(sizeof(vertex) * 1024); // TODO: protect
-		of->vertex_buffer_size = 1024;
+		buf->data = malloc(buf->elem_size * initial_size);
+		buf->buf_size = initial_size;
 	}
-	if (of->vertex_buffer_size == of->vertex_count)
+	else if (buf->count == buf->buf_size)
 	{
-		of->vertex_buffer_data = realloc(of->vertex_buffer_data,
-										 of->vertex_buffer_size * 2); // TODO: protect
-		of->vertex_buffer_size *= 2;
+		buf->buf_size *= 2;
+		buf->data = realloc(buf->data, buf->buf_size);
 	}
-	((t_vec4f*)of->vertex_buffer_data)[of->vertex_count++] = vertex;
 }
 
-void save_texture(t_vec2f texture, t_obj_file *of)
+void		*get_value(t_buf *buf, size_t index)
 {
-	if (of->textures_buffer == NULL)
-	{
-		of->textures_buffer = malloc(sizeof(texture) * 1024); // TODO: protect
-		of->textures_buffer_size = 1024;
-	}
-	if (of->textures_buffer_size == of->textures_count)
-	{
-		of->textures_buffer = realloc(of->textures_buffer,
-									  of->textures_buffer_size * 2);
-		of->textures_buffer_size *= 2;
-	}
-	of->textures_buffer[of->textures_count++] = texture;
+	return ((char*)buf->data + index * buf->elem_size);
 }
 
-void save_normal(t_vec3f normal, t_obj_file *of)
+void		push_back(t_buf *buf, void *data)
 {
-	if (of->normals_buffer == NULL)
-	{
-		of->normals_buffer = malloc(sizeof(normal) * 1024); // TODO: protect
-		of->normals_buffer_size = 1024;
-	}
-	if (of->normals_buffer_size == of->normals_count)
-	{
-		of->normals_buffer = realloc(of->normals_buffer,
-									  of->normals_buffer_size * 2);
-		of->normals_buffer_size *= 2;
-	}
-	of->normals_buffer[of->normals_count++] = normal;
+	realloc_if_need(buf); // TODO: protect
+	memcpy(get_value(buf, buf->count++), data, buf->elem_size);
 }
+
+void		buf_init(t_buf *buf, size_t size)
+{
+	buf->data = NULL;
+	buf->elem_size = size;
+	buf->buf_size = 0;
+	buf->count = 0;
+}
+
+void		buf_free(t_buf *buf)
+{
+	void *to_free;
+
+	to_free = buf->data;
+	buf_init(buf, buf->elem_size);
+	free(to_free);
+}
+
+size_t		get_index(t_buf *buf, void *find)
+{
+	size_t i;
+
+	i = -1;
+	while (++i < buf->count)
+		if (!memcmp(get_value(buf, i), find, buf->elem_size))
+			return i;
+	return -1;
+}
+
+// TODO: not buffer funcion

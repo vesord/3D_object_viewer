@@ -1,26 +1,31 @@
-//
-// Created by vesord on 12.07.2021.
-//
-
 #include "parsing_private.h"
 #include <errno.h>
 #include <ctype.h>
-#include <math.h>
 
-t_obj_file	*init_obj_file(void)
+t_obj_data	*create_obj_data(void)
 {
-	t_obj_file *obj_file;
+	t_obj_data *obj_data;
 
-	obj_file = malloc(sizeof(t_obj_file));	// TODO: protect
-	obj_file->vertex_buffer_data = NULL;
-	obj_file->index_buffer_data = NULL;
-	obj_file->index_count = 0;
-	obj_file->vertex_count = 0;
-	obj_file->has_normals = 0;
-	obj_file->has_textures = 0;
-	obj_file->err_type = ERR_NO_ERROR;
-	obj_file->textures_buffer = NULL;
-	obj_file->normals_buffer = NULL;
+	obj_data = malloc(sizeof(t_obj_data));	// TODO: protect
+	obj_data->vertex_buffer_data = NULL;
+	obj_data->index_buffer_data = NULL;
+	obj_data->index_buffer_count = 0;
+	obj_data->vertex_buffer_count = 0;
+	obj_data->has_normals = 0;
+	obj_data->has_textures = 0;
+	obj_data->err_type = ERR_NO_ERROR;
+
+	buf_init(&obj_data->vb, sizeof(t_vec4f));
+	buf_init(&obj_data->vb_out, sizeof(t_vec4f));
+	buf_init(&obj_data->tb, sizeof(t_vec2f));
+	buf_init(&obj_data->tb_out, sizeof(t_vec2f));
+	buf_init(&obj_data->nb, sizeof(t_vec3f));
+	buf_init(&obj_data->nb_out, sizeof(t_vec3f));
+	buf_init(&obj_data->ib, sizeof(t_vec3i));
+	buf_init(&obj_data->ib_out, sizeof(int));
+
+	obj_data->flt = FACE_LINE_TYPE_NONE;
+	return obj_data;
 }
 
 /*
@@ -28,7 +33,7 @@ t_obj_file	*init_obj_file(void)
 **	rises an error if conversion did not done
 **	rises an error if converting value is out of float range
 */
-float		parse_float_lt(const char *str, t_obj_file *obj_file,
+float		parse_float_lt(const char *str, t_obj_data *obj_file,
 							size_t *offset)
 {
 	float	res;
@@ -46,7 +51,7 @@ float		parse_float_lt(const char *str, t_obj_file *obj_file,
 **	works like strtol(), but sets obj_file->err_type if error occurs
 **	rises an error if converting value is out of int range
 */
-int			parse_int_lt(const char *str, t_obj_file *obj_file, size_t *offset)
+int			parse_int_lt(const char *str, t_obj_data *obj_file, size_t *offset)
 {
 	long	convert_res;
 	char	*end_ptr;
@@ -59,7 +64,7 @@ int			parse_int_lt(const char *str, t_obj_file *obj_file, size_t *offset)
 }
 
 t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
-						 t_obj_file *obj_file, size_t *offset)
+								t_obj_data *obj_file, size_t *offset)
 {
 	t_vec3i				indexes;
 	t_face_line_type	flt_cur;
@@ -80,9 +85,18 @@ t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
 			flt_cur = FACE_LINE_TYPE_VN;
 		if (flt_cur == FACE_LINE_TYPE_NONE && i == 2)
 			flt_cur = FACE_LINE_TYPE_VTN;
+		if (*(str + *offset) == '/')
+			(*offset)++;
 	}
-	if (flt_prev != FACE_LINE_TYPE_NONE && *flt_prev != flt_cur)
+	if (*flt_prev != FACE_LINE_TYPE_NONE && *flt_prev != flt_cur)
 		obj_file->err_type = ERR_PARSING_OBJ_LINE_TYPE_F;
 	*flt_prev = flt_cur;
 	return indexes;
 }
+
+void		make_triangulation(t_buf *buf)
+{
+	push_back(buf, ((char*)buf->data + (buf->count - 3) * buf->elem_size));
+	push_back(buf, ((char*)buf->data + (buf->count - 2) * buf->elem_size));
+}
+

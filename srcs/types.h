@@ -29,10 +29,19 @@ typedef struct	s_vec4f {
 	float w;
 }				t_vec4f;
 
+typedef struct	s_buf {
+	void		*data;
+	size_t		count;
+	size_t		buf_size;
+	size_t		elem_size;
+}				t_buf;
+
 typedef enum	e_error_codes {
 	ERR_NO_ERROR,
 	ERR_PARSING_OBJ_LINE_TYPE_V,
 	ERR_PARSING_OBJ_LINE_TYPE_F
 }				t_err;
+
+
 
 #endif //TYPES_H
