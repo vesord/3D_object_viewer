@@ -8,9 +8,9 @@ static void	realloc_if_need(t_buf *buf)
 	if (buf->data == NULL)
 	{
 		buf->data = malloc(buf->elem_size * initial_size);
-		buf->buf_size = initial_size;
+		buf->buf_size = initial_size * buf->elem_size;
 	}
-	else if (buf->count == buf->buf_size)
+	else if (buf->count == buf->buf_size / buf->elem_size)
 	{
 		buf->buf_size *= 2;
 		buf->data = realloc(buf->data, buf->buf_size);

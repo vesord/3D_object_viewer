@@ -37,5 +37,18 @@ const GLchar* fragmentShaderSrcSmoothColorChange =
 "outputColor = mix(theColor, white, lerp);\n"
 "}\n";
 
+const GLchar* fragment_shader_pass_vtn =
+"#version 460 core\n;"
 
+"flat in vec2 texture_pass;"
+"flat in vec3 normal_pass;"
+
+"out vec4 output_color;"
+
+"void main() {"
+"if (normal_pass == vec3(0.f, 0.f, 0.f) ) "
+"output_color = vec4(0.8f, 0.1f, 0.8f, 1.f);"
+" else "
+"output_color = abs(vec4(normal_pass, 1.f));"
+"}";
 #endif //FRAGMENTSHADERSIMPLE_H

@@ -20,6 +20,7 @@ static void	fill_buffers(t_obj_data *od)
 		push_back(&od->ib_out, &i);
 	}
 	od->index_buffer_count = i;
+	od->vertex_buffer_count = i;
 }
 
 static void	join_buffers(t_obj_data *od)
@@ -33,9 +34,9 @@ static void	join_buffers(t_obj_data *od)
 	nbo_size = od->nb_out.elem_size * od->nb_out.count;
 
 	od->vertex_buffer_data = malloc(vbo_size + tbo_size + nbo_size); // TODO: protect
-	memcpy(od->vertex_buffer_data, od->vb_out.data, vbo_size);
-	memcpy(od->vertex_buffer_data + vbo_size, od->tb_out.data, tbo_size);
-	memcpy(od->vertex_buffer_data + vbo_size + tbo_size, od->nb_out.data, nbo_size);
+	memcpy((char*)od->vertex_buffer_data, od->vb_out.data, vbo_size);
+	memcpy((char*)od->vertex_buffer_data + vbo_size, od->tb_out.data, tbo_size);
+	memcpy((char*)od->vertex_buffer_data + vbo_size + tbo_size, od->nb_out.data, nbo_size);
 	od->index_buffer_data = od->ib_out.data;
 }
 

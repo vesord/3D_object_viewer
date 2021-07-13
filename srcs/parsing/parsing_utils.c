@@ -87,6 +87,8 @@ t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
 			flt_cur = FACE_LINE_TYPE_VTN;
 		if (*(str + *offset) == '/')
 			(*offset)++;
+		if (isspace(*(str + *offset)))
+			break ;
 	}
 	if (*flt_prev != FACE_LINE_TYPE_NONE && *flt_prev != flt_cur)
 		obj_file->err_type = ERR_PARSING_OBJ_LINE_TYPE_F;

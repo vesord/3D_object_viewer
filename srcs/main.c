@@ -83,8 +83,16 @@ GLint modelToCameraMatrixUnif;
 
 // Callbacks
 void key_callback(GLFWwindow* w, int key, int scancode, int action, int mode) {
+	static int cull = 0;
 	if (key == GLFW_KEY_C) {
-		glClearColor(ft_randf(), ft_randf(), ft_randf(), 1.0f);
+		if (cull) {
+			cull = !cull;
+			glCullFace(GL_FRONT);
+		}
+		else {
+			cull = !cull;
+			glCullFace(GL_BACK);
+		}
 	}
 	else if (key == GLFW_KEY_ESCAPE) {
 		glfwSetWindowShouldClose(w, GL_TRUE);
@@ -153,7 +161,7 @@ void Initialization() {
 	glViewport(0, 0, width, height);
 
 	// Init frustum
-	zNear = 1.f; zFar = 45.f; fovDeg = 45.f;
+	zNear = 1.f; zFar = 450.f; fovDeg = 45.f;
 	frustumScale = CalcFrustumScale(fovDeg);
 
 	// Setting up culling
@@ -187,8 +195,10 @@ GLuint makeTestShaderProgram() {
 	if (!shaderList) {
 		exit(1);
 	}
-	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcModelCameraClipTransform);
-	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
+//	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcModelCameraClipTransform);
+//	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
+	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertex_shader_pass_vtn);
+	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragment_shader_pass_vtn);
 	shaderList[2] = 0;
 
 	shaderProgram = CreateShaderProgram(shaderList);
@@ -210,7 +220,9 @@ void StationaryOffset() {
 	modelToCameraMatrix[15] = 1.f;
 
 	// Stationary offset
-	modelToCameraMatrix[14] = -20.f;
+	modelToCameraMatrix[12] = -0.f;
+	modelToCameraMatrix[13] = -0.f;
+	modelToCameraMatrix[14] = -90.f;
 }
 
 void OvalOffset(float elapsedTime) {
@@ -251,31 +263,78 @@ void BottomCircleOffset(float elapsedTime) {
 	modelToCameraMatrix[14] = sinf(curTimeInLoop * scale) * 6.f - 20.f;
 }
 
+//typedef struct	s_scop
+//{
+//	GLuint vbo;
+//	GLuint ibo;
+//	GLuint vao;
+//}				t_scop;
+
+void register_buffers(t_obj_data *obj)
+{
+	size_t vertex_size;
+
+	vertex_size = sizeof(t_vec4f);
+	if (obj->has_normals)
+		vertex_size += sizeof(t_vec3f);
+	if (obj->has_textures)
+		vertex_size += sizeof(t_vec2f);
+
+	glGenBuffers(1, &vertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, obj->vertex_count * vertex_size, obj->vertex_buffer_data, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &indexBufferObject);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * obj->index_count, obj->index_buffer_data, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 int main()
 {
-	t_obj_data *obj = parse_obj_file("./models/cube.obj");
+//	t_obj_data *obj = parse_obj_file("./models/teapot2.obj");
+//	t_obj_data *obj = parse_obj_file("./models/42.obj");
+	t_obj_data *obj = parse_obj_file("./models/agalia.obj");
+//	t_obj_data *obj = parse_obj_file("./models/vamp_female.obj");
+//	t_obj_data *obj = parse_obj_file("./models/female.obj");
+//	t_obj_data *obj = parse_obj_file("./models/cube.obj");
 
 	Initialization();
 	RegisterCallbacks();
 	shaderProgram = makeTestShaderProgram();
-	InitBuffers();
+
+	register_buffers(obj);
+//	InitBuffers();
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
 	size_t colorDataOffset = sizeof(float) * 3 * numberOfVertices;
+	size_t textures_data_offset = sizeof(t_vec4f) * obj->vertex_count * obj->has_textures;
+	size_t normals_data_offset = sizeof(t_vec2f) * obj->vertex_count * obj->has_normals + textures_data_offset;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorDataOffset);
+	if (obj->has_textures)
+		glEnableVertexAttribArray(1);
+	if (obj->has_normals)
+		glEnableVertexAttribArray(2);
+//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); // for guide
+//	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorDataOffset); // for guide
+
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0); // for scop
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *)textures_data_offset);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)normals_data_offset);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 	glBindVertexArray(0);
 
 	// MAKE UNIFORM VARIABLES
 
-	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "cameraToClipMatrix");
-	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "modelToCameraMatrix");
+//	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "cameraToClipMatrix");
+//	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "modelToCameraMatrix");
+
+	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "camera_to_clip_matrix");
+	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "model_to_camera_matrix");
 
 	memset(cameraToClipMatrix, 0, sizeof(float) * 16);
 	cameraToClipMatrix[0] = frustumScale;
@@ -304,15 +363,18 @@ int main()
 
 		StationaryOffset();
 		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
-		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+		glDrawElements(GL_POINTS, obj->index_count, GL_UNSIGNED_INT, 0);
+//		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
 
-		OvalOffset((float)glfwGetTime());
-		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
-		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+//		OvalOffset((float)glfwGetTime());
+//		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
+//		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
+//		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
 
-		BottomCircleOffset((float)glfwGetTime());
-		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
-		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
+//		BottomCircleOffset((float)glfwGetTime());
+//		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
+//		glDrawElements(GL_LINES, obj->index_count / 3 * 2, GL_UNSIGNED_INT, 0);
+//		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
 
 //		glDrawArrays(GL_TRIANGLES, 0, numberOfVertices);
 

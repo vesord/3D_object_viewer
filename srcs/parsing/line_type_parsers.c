@@ -1,6 +1,6 @@
 #include "parsing_private.h"
-#include <math.h>
 #include <stdio.h>
+#include <ctype.h>
 
 void parse_skip_line_type(const char *line, t_obj_data *obj_file)
 {
@@ -59,7 +59,7 @@ void parse_face_line_type(const char *line, t_obj_data *obj_file)
 	points_count = 0;
 	line += 2;
 	offset = 0;
-	while (*(line + offset) != 0 && *(line + offset) != '\n')
+	while (*(line + offset) != 0 && !isspace(*(line + offset)))
 	{
 		if (points_count > 2)
 			make_triangulation(&obj_file->ib);

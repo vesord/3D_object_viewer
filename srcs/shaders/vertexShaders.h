@@ -65,4 +65,24 @@ const GLchar* vertexShaderSrcModelCameraClipTransform =
 "theColor = color;"
 "}";
 
+const GLchar* vertex_shader_pass_vtn =
+"#version 460 core\n"
+
+"layout (location = 0) in vec4 position;"
+"layout (location = 1) in vec2 texture;"
+"layout (location = 2) in vec3 normal;"
+
+"flat out vec3 normal_pass;"
+"flat out vec2 texture_pass;"
+
+"uniform mat4 camera_to_clip_matrix;"
+"uniform mat4 model_to_camera_matrix;"
+
+"void main() {"
+"vec4 camera_pos = model_to_camera_matrix * position;"
+"gl_Position = camera_to_clip_matrix * camera_pos;"
+"normal_pass = normal;"
+"texture_pass = texture;"
+"}";
+
 #endif //VERTEXSHADERSIMPLE_H

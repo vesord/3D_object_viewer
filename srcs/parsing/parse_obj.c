@@ -62,7 +62,7 @@ void parse_lines(const char *fname, FILE *file, t_obj_data *obj_file)
 	// TODO: check errno if getline fails
 	if (obj_file->err_type)
 		fprintf(stderr, "Error while parsing file %s in line %lu\n%s\n"
-						"Error code: %iu\n",
+						"Error code: %i\n",
 						fname, line_n, line, obj_file->err_type);
 	free(line);
 }
