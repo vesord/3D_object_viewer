@@ -42,13 +42,18 @@ const GLchar* fragment_shader_pass_vtn =
 
 "flat in vec2 texture_pass;"
 "flat in vec3 normal_pass;"
+"flat in vec4 position_pass;"
+"flat in int vertex_id_pass;"
 
 "out vec4 output_color;"
 
+"const vec4 grey_color_1 = vec4(0.1f, 0.1f, 0.1f, 1.f);"
+"const vec4 grey_color_3 = vec4(0.3f, 0.3f, 0.3f, 1.f);"
+"const vec4 grey_color_5 = vec4(0.5f, 0.5f, 0.5f, 1.f);"
+"const vec4 grey_color_8 = vec4(0.8f, 0.8f, 0.8f, 1.f);"
+
 "void main() {"
-"if (normal_pass == vec3(0.f, 0.f, 0.f) ) "
-"output_color = vec4(0.8f, 0.1f, 0.8f, 1.f);"
-" else "
-"output_color = abs(vec4(normal_pass, 1.f));"
+"float intense = (vertex_id_pass % 8) / 10.f + 0.1f;"
+"output_color = vec4(intense, intense, intense, 1.f);"
 "}";
 #endif //FRAGMENTSHADERSIMPLE_H

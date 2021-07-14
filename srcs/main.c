@@ -44,6 +44,29 @@ const float vertexData[] =
 		BROWN_COLOR,
 	};
 
+const float vertexData2[] =
+	{
+		+1.0f, +1.0f, +1.0f, 1.f,
+		-1.0f, -1.0f, +1.0f, 1.f,
+		-1.0f, +1.0f, -1.0f, 1.f,
+		+1.0f, -1.0f, -1.0f, 1.f,
+
+		-1.0f, -1.0f, -1.0f, 1.f,
+		+1.0f, +1.0f, -1.0f, 1.f,
+		+1.0f, -1.0f, +1.0f, 1.f,
+		-1.0f, +1.0f, +1.0f, 1.f,
+
+		GREEN_COLOR,
+		BLUE_COLOR,
+		RED_COLOR,
+		BROWN_COLOR,
+
+		GREEN_COLOR,
+		BLUE_COLOR,
+		RED_COLOR,
+		BROWN_COLOR,
+	};
+
 const GLshort indexData[] =
 	{
 		0, 1, 2,
@@ -166,7 +189,7 @@ void Initialization() {
 
 	// Setting up culling
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	glCullFace(GL_FRONT);
 	glFrontFace(GL_CW);
 
 	// Setting up Depth test
@@ -178,7 +201,7 @@ void Initialization() {
 void InitBuffers() {
 	glGenBuffers(1, &vertexBufferObject);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData2), vertexData2, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &indexBufferObject);
@@ -222,7 +245,7 @@ void StationaryOffset() {
 	// Stationary offset
 	modelToCameraMatrix[12] = -0.f;
 	modelToCameraMatrix[13] = -0.f;
-	modelToCameraMatrix[14] = -90.f;
+	modelToCameraMatrix[14] = -100.f;
 }
 
 void OvalOffset(float elapsedTime) {
@@ -293,12 +316,14 @@ void register_buffers(t_obj_data *obj)
 
 int main()
 {
+//	t_obj_data *obj = parse_obj_file("./models/teapot.obj");
 //	t_obj_data *obj = parse_obj_file("./models/teapot2.obj");
 //	t_obj_data *obj = parse_obj_file("./models/42.obj");
-	t_obj_data *obj = parse_obj_file("./models/agalia.obj");
-//	t_obj_data *obj = parse_obj_file("./models/vamp_female.obj");
+//	t_obj_data *obj = parse_obj_file("./models/agalia.obj");
+//	t_obj_data *obj = parse_obj_file("./models/agalia2.obj");
+	t_obj_data *obj = parse_obj_file("./models/vamp_female.obj");
 //	t_obj_data *obj = parse_obj_file("./models/female.obj");
-//	t_obj_data *obj = parse_obj_file("./models/cube.obj");
+//	t_obj_data *obj = parse_obj_file("./models/cube3.obj");
 
 	Initialization();
 	RegisterCallbacks();
@@ -310,7 +335,7 @@ int main()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	size_t colorDataOffset = sizeof(float) * 3 * numberOfVertices;
+	size_t colorDataOffset = sizeof(float) * 4 * numberOfVertices;
 	size_t textures_data_offset = sizeof(t_vec4f) * obj->vertex_count * obj->has_textures;
 	size_t normals_data_offset = sizeof(t_vec2f) * obj->vertex_count * obj->has_normals + textures_data_offset;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
@@ -319,7 +344,7 @@ int main()
 		glEnableVertexAttribArray(1);
 	if (obj->has_normals)
 		glEnableVertexAttribArray(2);
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); // for guide
+//	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0); // for guide
 //	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorDataOffset); // for guide
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0); // for scop
@@ -363,7 +388,10 @@ int main()
 
 		StationaryOffset();
 		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
-		glDrawElements(GL_POINTS, obj->index_count, GL_UNSIGNED_INT, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		glDrawArrays(GL_TRIANGLES, 0, obj->index_count);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+//		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
 //		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
 
 //		OvalOffset((float)glfwGetTime());
@@ -373,7 +401,7 @@ int main()
 
 //		BottomCircleOffset((float)glfwGetTime());
 //		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
-//		glDrawElements(GL_LINES, obj->index_count / 3 * 2, GL_UNSIGNED_INT, 0);
+//		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
 //		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
 
 //		glDrawArrays(GL_TRIANGLES, 0, numberOfVertices);

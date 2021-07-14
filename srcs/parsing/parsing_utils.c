@@ -1,6 +1,7 @@
 #include "parsing_private.h"
 #include <errno.h>
 #include <ctype.h>
+#include <string.h>
 
 t_obj_data	*create_obj_data(void)
 {
@@ -64,7 +65,7 @@ int			parse_int_lt(const char *str, t_obj_data *obj_file, size_t *offset)
 }
 
 t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
-								t_obj_data *obj_file, size_t *offset)
+								t_obj_data *obj_file, size_t *offset) // TODO: check if 1 or 2 points in line (err)
 {
 	t_vec3i				indexes;
 	t_face_line_type	flt_cur;
@@ -98,7 +99,15 @@ t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
 
 void		make_triangulation(t_buf *buf)
 {
-	push_back(buf, ((char*)buf->data + (buf->count - 3) * buf->elem_size));
-	push_back(buf, ((char*)buf->data + (buf->count - 2) * buf->elem_size));
+	void *data1;
+	void *data2;
+
+	data1 = malloc(buf->elem_size); // TODO: protect
+	data2 = malloc(buf->elem_size); // TODO: protect
+	memcpy(data1, ((char*)buf->data + (buf->count - 3) * buf->elem_size), buf->elem_size);
+	memcpy(data2, ((char*)buf->data + (buf->count - 1) * buf->elem_size), buf->elem_size);
+
+	push_back(buf, data1);
+	push_back(buf, data2);
 }
 

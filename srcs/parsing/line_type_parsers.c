@@ -59,7 +59,7 @@ void parse_face_line_type(const char *line, t_obj_data *obj_file)
 	points_count = 0;
 	line += 2;
 	offset = 0;
-	while (*(line + offset) != 0 && !isspace(*(line + offset)))
+	while (*(line + offset) != 0)
 	{
 		if (points_count > 2)
 			make_triangulation(&obj_file->ib);
@@ -69,6 +69,8 @@ void parse_face_line_type(const char *line, t_obj_data *obj_file)
 			break;
 		push_back(&obj_file->ib, &cur_index);
 		++points_count;
+		while (isspace(*(line + offset)))
+			++offset;
 	}
 }
 
