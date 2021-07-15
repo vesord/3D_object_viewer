@@ -14,11 +14,13 @@ include_directories(srcs/calculations)
 include_directories(srcs/parsing)
 include_directories(srcs/events)
 include_directories(srcs/buffers)
+include_directories(srcs/initialization)
 
 #target_link_directories(glew-2.2.0/lib glfw-3.3.4/src)
 
 set(MAIN_FILES  srcs/scop.h
 				srcs/types.h
+				srcs/scop_struct.h
 				srcs/main.c )
 set(CALCULATIONS_FILES  srcs/calculations/calculations.h
 	srcs/calculations/calculations.c)
@@ -36,10 +38,14 @@ set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/fill_output_buffers.c)
 set(SHADERS_FILES   srcs/shaders/shaders.h
 					srcs/shaders/shader_private.h
-					srcs/shaders/shaders.c)
+					srcs/shaders/shaders.c
+					srcs/shaders/shaders_utils.c)
 
 set(BUFFERS_FILES   srcs/buffers/buffers.h
 					srcs/buffers/buffers.c)
+
+set(INIT_FILES      srcs/initialization/initialization.h
+					srcs/initialization/initialization.c)
 
 add_executable(scop ${MAIN_FILES}
 					${CALCULATIONS_FILES}
@@ -47,7 +53,8 @@ add_executable(scop ${MAIN_FILES}
 					${EVENTS_FILES}
 					${PARSING_FILES}
 					${SHADERS_FILES}
-					${BUFFERS_FILES})
+					${BUFFERS_FILES}
+					${INIT_FILES})
 
 target_link_libraries(scop  ${CMAKE_SOURCE_DIR}/glew-2.2.0/lib/libGLEW.a
 							${CMAKE_SOURCE_DIR}/glfw-3.3.4/src/libglfw3.a

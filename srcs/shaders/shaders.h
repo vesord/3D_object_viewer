@@ -1,12 +1,11 @@
-//
-// Created by vesord on 10.07.2021.
-//
-
 #ifndef SCOP_SHADERS_H
 #define SCOP_SHADERS_H
 
 #include "scop.h"
+#include "scop_struct.h"
 
-GLuint make_gray_shader();	/// TEST FUNCTION
+GLuint create_shader_program_vert_frag(const char *vert_shader_src,
+									   const char *frag_shader_src);
+void	update_uniforms_locations(t_shaders *shaders);
 
-#endif //SCOP_SHADERS_H
+#endif

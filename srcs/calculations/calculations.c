@@ -17,6 +17,14 @@ void stationary_offset(t_mat4f *model_to_cam) {
 	model_to_cam->w.z = -100.f;
 }
 
+float calc_frustum_scale(float fov_deg) {
+	const float deg_to_rad = 3.14159f * 2.0f / 360.0f;
+	float fov_rad = fov_deg * deg_to_rad;
+	return 1.0f / tanf(fov_rad / 2.0f);
+}
+
+
+
 /// TEST FUNCTION
 void ComputeRotationOffsets(float *fXOffset, float *fYOffset)
 {

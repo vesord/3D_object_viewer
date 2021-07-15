@@ -4,6 +4,7 @@
 #include "events.h"
 #include "buffers.h"
 #include "calculations.h"
+#include "initialization.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,82 +13,6 @@
 
 float ft_randf() {
 	return (float)rand() / (float)INT32_MAX;
-}
-
-// Window
-GLFWwindow* window;
-
-// Buffers/Arrays
-GLuint vertexBufferObject;
-GLuint indexBufferObject;
-GLuint vertexArrayObject;
-
-// Shaders
-GLuint shaderProgram;
-
-// Perspective settings
-float calc_frustum_scale(float fFovDeg) {
-	const float degToRad = 3.14159f * 2.0f / 360.0f;
-	float fFovRad = fFovDeg * degToRad;
-	return 1.0f / tanf(fFovRad / 2.0f);
-}
-
-float zFar; float zNear; float fovDeg; float frustumScale;
-float cameraToClipMatrix[16];
-GLint cameraToClipMatrixUnif;
-float modelToCameraMatrix[16];
-GLint modelToCameraMatrixUnif;
-
-// Initializations
-
-void create_window() {
-	window = glfwCreateWindow(800, 800, "3D viewer", NULL, NULL);
-	if (window == NULL)
-	{
-		printf("Failed to create GLFW window\n");
-		glfwTerminate();
-		exit(1);
-	}
-	glfwMakeContextCurrent(window);
-}
-
-void Initialization() {
-	// Init glfw
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // CORE_PROFILE will cause errors during calls to deprecated functions
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Something for macOS TODO: check what is this
-	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	// Create window
-	create_window();
-
-	// Init glew
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
-	{
-		printf("Failed to create GLEW window\n");
-		exit(1);
-	}
-
-	// Init viewport
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	glViewport(0, 0, width, height);
-
-	// Init frustum
-	zNear = 1.f; zFar = 450.f; fovDeg = 45.f;
-	frustumScale = calc_frustum_scale(fovDeg);
-
-	// Setting up culling
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CW);
-
-	// Setting up Depth test
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthRange(0.f, 1.f);
 }
 
 //typedef struct	s_scop
@@ -99,9 +24,10 @@ void Initialization() {
 
 int main()
 {
-	Initialization();
-	RegisterCallbacks(window);
-	shaderProgram = make_gray_shader();
+	t_scop scop;
+
+	initialization(&scop);
+	RegisterCallbacks(scop.window); // TODO: move to init
 
 //	t_obj_data *obj = parse_obj_file("./models/teapot.obj");
 //	t_obj_data *obj = parse_obj_file("./models/teapot2.obj");
@@ -112,47 +38,27 @@ int main()
 //	t_obj_data *obj = parse_obj_file("./models/female.obj");
 //	t_obj_data *obj = parse_obj_file("./models/cube3.obj");
 
+	// BUFFERS;
+	set_buf_data_from_obj(obj, scop.bufs.vbo, scop.bufs.ibo); // Use after model change
+	set_vao_for_obj(obj, scop.bufs.vao, scop.bufs.vbo, scop.bufs.ibo); // Use after on model change
 
-	glGenBuffers(1, &vertexBufferObject);
-	glGenBuffers(1, &indexBufferObject);
-	glGenVertexArrays(1, &vertexArrayObject);
-
-	set_buf_data_from_obj(obj, vertexBufferObject, indexBufferObject);
-	set_vao_for_obj(obj, vertexArrayObject, vertexBufferObject, indexBufferObject);
-
-	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "camera_to_clip_matrix");
-	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "model_to_camera_matrix");
-
-	memset(cameraToClipMatrix, 0, sizeof(float) * 16);
-	cameraToClipMatrix[0] = frustumScale;
-	cameraToClipMatrix[5] = frustumScale;
-	cameraToClipMatrix[10] = (zFar + zNear) / (zNear - zFar);
-	cameraToClipMatrix[11] = -1.f;
-	cameraToClipMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
-	glUseProgram(shaderProgram);
-	glUniformMatrix4fv(cameraToClipMatrixUnif, 1, GL_FALSE, cameraToClipMatrix);
-	glUseProgram(0);
-
-	glUseProgram(shaderProgram);
-	glUseProgram(shaderProgram);
 	// DISPLAY LOOP
 
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClearDepth(1.f);
-	while(!glfwWindowShouldClose(window))
+	while(!glfwWindowShouldClose(scop.window))
 	{
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glBindVertexArray(vertexArrayObject);
+		glBindVertexArray(scop.bufs.vao);
+		glUseProgram(scop.shaders.cur);
 
-		glUseProgram(shaderProgram);
-
-		stationary_offset((t_mat4f *) modelToCameraMatrix);
-		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		stationary_offset(&scop.model_to_cam); // TODO: change to rotate
+		glUniformMatrix4fv(scop.shaders.model_to_cam_unif, 1, GL_FALSE, (float *)&scop.model_to_cam);
+		glUniformMatrix4fv(scop.shaders.cam_to_clip_unif, 1, GL_FALSE, (float *)&scop.cam_to_clip);
 		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
 //		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
 //		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
 
@@ -169,7 +75,7 @@ int main()
 //		glDrawArrays(GL_TRIANGLES, 0, numberOfVertices);
 
 		glBindVertexArray(0);
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(scop.window);
 	}
 	glfwTerminate();
 	return 0;

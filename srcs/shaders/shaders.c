@@ -1,100 +1,49 @@
 #include "scop.h"
+#include "scop_struct.h"
 #include "shader_private.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "initialization.h"
 
-GLuint CreateShader(GLenum eShaderType, const GLchar** strShaderFile)
+void	update_uniforms_locations(t_shaders *shaders)
 {
-	GLuint shader = glCreateShader(eShaderType);
+	shaders->cam_to_clip_unif = glGetUniformLocation(shaders->cur, "camera_to_clip_matrix");
+	shaders->model_to_cam_unif = glGetUniformLocation(shaders->cur, "model_to_camera_matrix");
+}
+
+GLuint create_shader(GLenum shader_type, const GLchar** strShaderFile)
+{
+	GLuint shader;
+
+	shader = glCreateShader(shader_type);
 	glShaderSource(shader, 1, strShaderFile, NULL);
-
 	glCompileShader(shader);
-
-	GLint status;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = malloc(infoLogLength);
-		if (!strInfoLog) {
-			exit(1);
-		}
-		glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
-
-		const char *strShaderType = NULL;
-		switch(eShaderType)
-		{
-			case GL_VERTEX_SHADER: strShaderType = "vertex"; break;
-			case GL_GEOMETRY_SHADER: strShaderType = "geometry"; break;
-			case GL_FRAGMENT_SHADER: strShaderType = "fragment"; break;
-			default: ;
-		}
-
-		fprintf(stderr, "Compile failure in %s shader:\n%s\n", strShaderType, strInfoLog);
-		free(strInfoLog);
-	}
+	if (!is_shader_ok(shader, shader_type))
+		init_fail("Failed to create shader");
 	return shader;
 }
 
-GLuint CreateShaderProgram(GLuint *shaderList) {
-	// Make shader program
-	GLuint shaderProgram;
-	shaderProgram = glCreateProgram();
+GLuint create_shader_program(GLuint *shader_list) {
+	GLuint shader_program;
 
-	// Attaching shader program
-	GLuint *shaderListIter = shaderList;
-	while (*shaderListIter) {
-		glAttachShader(shaderProgram, *shaderListIter);
-		++shaderListIter;
-	}
-
-	// Linking shaders
-	glLinkProgram(shaderProgram);
-
-	// Check if program attached and linked successfully
-	GLint success;
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		GLint infoLogLength;
-		glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-		GLchar *infoLog = malloc(infoLogLength);
-		if (!infoLog) {
-			exit(1);
-		}
-		glGetProgramInfoLog(shaderProgram, infoLogLength, NULL, infoLog);
-		printf("Linker failure: %s", infoLog);
-		free(infoLog);
-	}
-	shaderListIter = shaderList;
-	while (*shaderListIter) {
-		glDetachShader(shaderProgram, *shaderListIter);
-		glDeleteShader(*shaderListIter);
-		++shaderListIter;
-	}
-	return shaderProgram;
+	shader_program = glCreateProgram();
+	attach_shaders(shader_program, shader_list);
+	glLinkProgram(shader_program);
+	if (!is_shader_program_ok(shader_program))
+		init_fail("Failed to create shader program");
+	free_shaders(shader_program, shader_list);
+	return shader_program;
 }
 
-GLuint make_gray_shader() {
+GLuint create_shader_program_vert_frag(const char *vert_shader_src,
+									 const char *frag_shader_src) {
 	GLuint *shader_list;
-	GLuint	shader_program;
+	GLuint shader_program;
 
-	shader_list = malloc(sizeof(GLuint) * 3); // TODO: protect
-	if (!shader_list) {
-		exit(1);
-	}
-	shader_list[0] = CreateShader(GL_VERTEX_SHADER, &vertex_shader_pass_vtn);
-	shader_list[1] = CreateShader(GL_FRAGMENT_SHADER, &fragment_shader_pass_vtn);
+	if (! (shader_list = malloc(sizeof(GLuint) * 3)))
+		init_fail("Not enough memory");
+	shader_list[0] = create_shader(GL_VERTEX_SHADER, &vert_shader_src);
+	shader_list[1] = create_shader(GL_FRAGMENT_SHADER, &frag_shader_src);
 	shader_list[2] = 0;
-
-	shader_program = CreateShaderProgram(shader_list);
-
-	glUseProgram(shader_program);
-	// APPLY UNIFORMS MB
-	glUseProgram(0);
+	shader_program = create_shader_program(shader_list);
 	free(shader_list);
 	return shader_program;
 }
