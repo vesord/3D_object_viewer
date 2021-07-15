@@ -15,8 +15,7 @@ include_directories(srcs/parsing)
 include_directories(srcs/events)
 include_directories(srcs/buffers)
 include_directories(srcs/initialization)
-
-#target_link_directories(glew-2.2.0/lib glfw-3.3.4/src)
+include_directories(srcs/display)
 
 set(MAIN_FILES  srcs/scop.h
 				srcs/types.h
@@ -25,7 +24,8 @@ set(MAIN_FILES  srcs/scop.h
 set(CALCULATIONS_FILES  srcs/calculations/calculations.h
 	srcs/calculations/calculations.c)
 
-set(DISPLAY_FILES)
+set(DISPLAY_FILES   srcs/display/display.h
+					srcs/display/display.c)
 set(EVENTS_FILES    srcs/events/events.h
 					srcs/events/events_private.h
 					srcs/events/callbacks.c)
