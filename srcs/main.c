@@ -1,6 +1,8 @@
 #include "scop.h"
 #include "shaders.h"
 #include "parsing.h"
+#include "events.h"
+#include "buffers.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,88 +13,19 @@ float ft_randf() {
 	return (float)rand() / (float)INT32_MAX;
 }
 
-// Object data
-
-const int numberOfVertices = 8;
-
-#define GREEN_COLOR 0.0f, 1.0f, 0.0f, 1.0f
-#define BLUE_COLOR 	0.0f, 0.0f, 1.0f, 1.0f
-#define RED_COLOR 1.0f, 0.0f, 0.0f, 1.0f
-#define GREY_COLOR 0.8f, 0.8f, 0.8f, 1.0f
-#define BROWN_COLOR 0.5f, 0.5f, 0.0f, 1.0f
-
-const float vertexData[] =
-	{
-		+1.0f, +1.0f, +1.0f,
-		-1.0f, -1.0f, +1.0f,
-		-1.0f, +1.0f, -1.0f,
-		+1.0f, -1.0f, -1.0f,
-
-		-1.0f, -1.0f, -1.0f,
-		+1.0f, +1.0f, -1.0f,
-		+1.0f, -1.0f, +1.0f,
-		-1.0f, +1.0f, +1.0f,
-
-		GREEN_COLOR,
-		BLUE_COLOR,
-		RED_COLOR,
-		BROWN_COLOR,
-
-		GREEN_COLOR,
-		BLUE_COLOR,
-		RED_COLOR,
-		BROWN_COLOR,
-	};
-
-const float vertexData2[] =
-	{
-		+1.0f, +1.0f, +1.0f, 1.f,
-		-1.0f, -1.0f, +1.0f, 1.f,
-		-1.0f, +1.0f, -1.0f, 1.f,
-		+1.0f, -1.0f, -1.0f, 1.f,
-
-		-1.0f, -1.0f, -1.0f, 1.f,
-		+1.0f, +1.0f, -1.0f, 1.f,
-		+1.0f, -1.0f, +1.0f, 1.f,
-		-1.0f, +1.0f, +1.0f, 1.f,
-
-		GREEN_COLOR,
-		BLUE_COLOR,
-		RED_COLOR,
-		BROWN_COLOR,
-
-		GREEN_COLOR,
-		BLUE_COLOR,
-		RED_COLOR,
-		BROWN_COLOR,
-	};
-
-const GLshort indexData[] =
-	{
-		0, 1, 2,
-		1, 0, 3,
-		2, 3, 0,
-		3, 2, 1,
-
-		5, 4, 6,
-		4, 5, 7,
-		7, 6, 4,
-		6, 7, 5,
-	};
-
 // Window
 GLFWwindow* window;
 
 // Buffers/Arrays
 GLuint vertexBufferObject;
 GLuint indexBufferObject;
-GLuint vao;
+GLuint vertexArrayObject;
 
 // Shaders
 GLuint shaderProgram;
 
 // Perspective settings
-float CalcFrustumScale(float fFovDeg) {
+float calc_frustum_scale(float fFovDeg) {
 	const float degToRad = 3.14159f * 2.0f / 360.0f;
 	float fFovRad = fFovDeg * degToRad;
 	return 1.0f / tanf(fFovRad / 2.0f);
@@ -104,51 +37,10 @@ GLint cameraToClipMatrixUnif;
 float modelToCameraMatrix[16];
 GLint modelToCameraMatrixUnif;
 
-// Callbacks
-void key_callback(GLFWwindow* w, int key, int scancode, int action, int mode) {
-	static int cull = 0;
-	if (key == GLFW_KEY_C) {
-		if (cull) {
-			cull = !cull;
-			glCullFace(GL_FRONT);
-		}
-		else {
-			cull = !cull;
-			glCullFace(GL_BACK);
-		}
-	}
-	else if (key == GLFW_KEY_ESCAPE) {
-		glfwSetWindowShouldClose(w, GL_TRUE);
-	}
-	else if (key == GLFW_KEY_L) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else if (key == GLFW_KEY_S) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-}
-
-void reshape_callback(GLFWwindow* w, int width, int height) {
-	(void)w;
-	cameraToClipMatrix[0] = frustumScale / ((float)width / (float)height);
-	cameraToClipMatrix[5] = frustumScale;
-
-	glUseProgram(shaderProgram);
-	glUniformMatrix4fv(cameraToClipMatrixUnif, 1, GL_FALSE, cameraToClipMatrix);
-	glUseProgram(0);
-
-	glViewport(0, 0, width, height);
-}
-
-void RegisterCallbacks() {
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetWindowSizeCallback(window, reshape_callback);
-}
-
 // Initializations
 
-void scopCreateWindow() {
-	window = glfwCreateWindow(800, 800, "LearnOpenGL", NULL, NULL);
+void create_window() {
+	window = glfwCreateWindow(800, 800, "3D viewer", NULL, NULL);
 	if (window == NULL)
 	{
 		printf("Failed to create GLFW window\n");
@@ -168,7 +60,7 @@ void Initialization() {
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	// Create window
-	scopCreateWindow();
+	create_window();
 
 	// Init glew
 	glewExperimental = GL_TRUE;
@@ -185,7 +77,7 @@ void Initialization() {
 
 	// Init frustum
 	zNear = 1.f; zFar = 450.f; fovDeg = 45.f;
-	frustumScale = CalcFrustumScale(fovDeg);
+	frustumScale = calc_frustum_scale(fovDeg);
 
 	// Setting up culling
 	glEnable(GL_CULL_FACE);
@@ -196,18 +88,6 @@ void Initialization() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthRange(0.f, 1.f);
-}
-
-void InitBuffers() {
-	glGenBuffers(1, &vertexBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData2), vertexData2, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &indexBufferObject);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexData), indexData, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void StationaryOffset() {
@@ -267,32 +147,15 @@ void BottomCircleOffset(float elapsedTime) {
 //{
 //	GLuint vbo;
 //	GLuint ibo;
-//	GLuint vao;
+//	GLuint vertexArrayObject;
 //}				t_scop;
-
-void register_buffers(t_obj_data *obj)
-{
-	size_t vertex_size;
-
-	vertex_size = sizeof(t_vec4f);
-	if (obj->has_normals)
-		vertex_size += sizeof(t_vec3f);
-	if (obj->has_textures)
-		vertex_size += sizeof(t_vec2f);
-
-	glGenBuffers(1, &vertexBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, obj->vertex_count * vertex_size, obj->vertex_buffer_data, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &indexBufferObject);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * obj->index_count, obj->index_buffer_data, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
 
 int main()
 {
+	Initialization();
+	RegisterCallbacks(window);
+	shaderProgram = make_gray_shader();
+
 //	t_obj_data *obj = parse_obj_file("./models/teapot.obj");
 //	t_obj_data *obj = parse_obj_file("./models/teapot2.obj");
 //	t_obj_data *obj = parse_obj_file("./models/42.obj");
@@ -302,38 +165,13 @@ int main()
 //	t_obj_data *obj = parse_obj_file("./models/female.obj");
 //	t_obj_data *obj = parse_obj_file("./models/cube3.obj");
 
-	Initialization();
-	RegisterCallbacks();
-	shaderProgram = make_gray_shader();
 
-	register_buffers(obj);
-//	InitBuffers();
+	glGenBuffers(1, &vertexBufferObject);
+	glGenBuffers(1, &indexBufferObject);
+	glGenVertexArrays(1, &vertexArrayObject);
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	size_t colorDataOffset = sizeof(float) * 4 * numberOfVertices;
-	size_t textures_data_offset = sizeof(t_vec4f) * obj->vertex_count * obj->has_textures;
-	size_t normals_data_offset = sizeof(t_vec2f) * obj->vertex_count * obj->has_normals + textures_data_offset;
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glEnableVertexAttribArray(0);
-	if (obj->has_textures)
-		glEnableVertexAttribArray(1);
-	if (obj->has_normals)
-		glEnableVertexAttribArray(2);
-//	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0); // for guide
-//	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorDataOffset); // for guide
-
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0); // for scop
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *)textures_data_offset);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)normals_data_offset);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	glBindVertexArray(0);
-
-	// MAKE UNIFORM VARIABLES
-
-//	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "cameraToClipMatrix");
-//	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "modelToCameraMatrix");
+	set_buf_data_from_obj(obj, vertexBufferObject, indexBufferObject);
+	set_vao_for_obj(obj, vertexArrayObject, vertexBufferObject, indexBufferObject);
 
 	cameraToClipMatrixUnif = glGetUniformLocation(shaderProgram, "camera_to_clip_matrix");
 	modelToCameraMatrixUnif = glGetUniformLocation(shaderProgram, "model_to_camera_matrix");
@@ -359,7 +197,7 @@ int main()
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glBindVertexArray(vao);
+		glBindVertexArray(vertexArrayObject);
 
 		glUseProgram(shaderProgram);
 

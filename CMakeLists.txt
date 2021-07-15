@@ -12,6 +12,8 @@ include_directories(srcs)
 include_directories(srcs/shaders)
 include_directories(srcs/calculations)
 include_directories(srcs/parsing)
+include_directories(srcs/events)
+include_directories(srcs/buffers)
 
 #target_link_directories(glew-2.2.0/lib glfw-3.3.4/src)
 
@@ -22,7 +24,9 @@ set(CALCULATIONS_FILES  srcs/calculations/calculations.h
 						srcs/calculations/rotationOffset.c)
 
 set(DISPLAY_FILES)
-set(EVENTS_FILES)
+set(EVENTS_FILES    srcs/events/events.h
+					srcs/events/events_private.h
+					srcs/events/callbacks.c)
 set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/parsing_private.h
 					srcs/parsing/parse_obj.c
@@ -34,12 +38,16 @@ set(SHADERS_FILES   srcs/shaders/shaders.h
 					srcs/shaders/shader_private.h
 					srcs/shaders/shaders.c)
 
+set(BUFFERS_FILES   srcs/buffers/buffers.h
+					srcs/buffers/buffers.c)
+
 add_executable(scop ${MAIN_FILES}
 					${CALCULATIONS_FILES}
 					${DISPLAY_FILES}
-					${ENENTS_FILES}
+					${EVENTS_FILES}
 					${PARSING_FILES}
-					${SHADERS_FILES})
+					${SHADERS_FILES}
+					${BUFFERS_FILES})
 
 target_link_libraries(scop  ${CMAKE_SOURCE_DIR}/glew-2.2.0/lib/libGLEW.a
 							${CMAKE_SOURCE_DIR}/glfw-3.3.4/src/libglfw3.a
