@@ -29,6 +29,13 @@ typedef struct	s_vec4f {
 	float w;
 }				t_vec4f;
 
+typedef struct	s_mat4f {
+	t_vec4f x;
+	t_vec4f y;
+	t_vec4f z;
+	t_vec4f w;
+}				t_mat4f;
+
 typedef struct	s_buf {
 	void		*data;
 	size_t		count;

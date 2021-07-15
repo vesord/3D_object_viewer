@@ -3,6 +3,7 @@
 #include "parsing.h"
 #include "events.h"
 #include "buffers.h"
+#include "calculations.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,7 +59,6 @@ void Initialization() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // CORE_PROFILE will cause errors during calls to deprecated functions
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Something for macOS TODO: check what is this
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-
 	// Create window
 	create_window();
 
@@ -88,59 +88,6 @@ void Initialization() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthRange(0.f, 1.f);
-}
-
-void StationaryOffset() {
-	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
-
-	// Identity matrix
-	modelToCameraMatrix[0] = 1.f;
-	modelToCameraMatrix[5] = 1.f;
-	modelToCameraMatrix[10] = 1.f;
-	modelToCameraMatrix[15] = 1.f;
-
-	// Stationary offset
-	modelToCameraMatrix[12] = -0.f;
-	modelToCameraMatrix[13] = -0.f;
-	modelToCameraMatrix[14] = -100.f;
-}
-
-void OvalOffset(float elapsedTime) {
-	const float loopDuration = 3.f;
-	const float scale = 3.141592f * 2.f / loopDuration;
-
-	float curTimeInLoop = fmodf(elapsedTime, loopDuration);
-
-	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
-
-	// Identity matrix
-	modelToCameraMatrix[0] = 1.f;
-	modelToCameraMatrix[5] = 1.f;
-	modelToCameraMatrix[10] = 1.f;
-	modelToCameraMatrix[15] = 1.f;
-
-	modelToCameraMatrix[12] = cosf(curTimeInLoop * scale) * 4.f;
-	modelToCameraMatrix[13] = sinf(curTimeInLoop * scale) * 6.f;
-	modelToCameraMatrix[14] = -20.f;
-}
-
-void BottomCircleOffset(float elapsedTime) {
-	const float loopDuration = 12.f;
-	const float scale = 3.141592f * 2.f / loopDuration;
-
-	float curTimeInLoop = fmodf(elapsedTime, loopDuration);
-
-	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
-
-	// Identity matrix
-	modelToCameraMatrix[0] = 1.f;
-	modelToCameraMatrix[5] = 1.f;
-	modelToCameraMatrix[10] = 1.f;
-	modelToCameraMatrix[15] = 1.f;
-
-	modelToCameraMatrix[12] = cosf(curTimeInLoop * scale) * 5.f;
-	modelToCameraMatrix[13] = -3.5f;
-	modelToCameraMatrix[14] = sinf(curTimeInLoop * scale) * 6.f - 20.f;
 }
 
 //typedef struct	s_scop
@@ -201,7 +148,7 @@ int main()
 
 		glUseProgram(shaderProgram);
 
-		StationaryOffset();
+		stationary_offset((t_mat4f *) modelToCameraMatrix);
 		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);

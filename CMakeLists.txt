@@ -21,7 +21,7 @@ set(MAIN_FILES  srcs/scop.h
 				srcs/types.h
 				srcs/main.c )
 set(CALCULATIONS_FILES  srcs/calculations/calculations.h
-						srcs/calculations/rotationOffset.c)
+	srcs/calculations/calculations.c)
 
 set(DISPLAY_FILES)
 set(EVENTS_FILES    srcs/events/events.h
