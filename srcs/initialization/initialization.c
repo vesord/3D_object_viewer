@@ -115,6 +115,7 @@ void init_matrices(t_matrices *mat)
 	init_cam_to_clip_matrix(&mat->cam_to_clip);
 	init_model_to_cam_matrix(&mat->model_to_cam);
 	init_transform(&mat->transf);
+	memcpy(&mat->center_translate, &g_identity_matrix, sizeof(t_mat4f));
 }
 
 void init_shaders(t_shaders *shaders)
@@ -148,9 +149,9 @@ void init_keys(t_keys *keys)
 	keys->down = 0;
 	keys->enable_rotation = 0;
 	keys->change_cull = 0;
-	keys->draw_points;
-	keys->draw_lines;
-	keys->draw_triangles;
+	keys->draw_points = 0;
+	keys->draw_lines = 0;
+	keys->draw_triangles = 0;
 }
 
 void init_states(t_states *states)

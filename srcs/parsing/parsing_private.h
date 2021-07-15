@@ -1,5 +1,5 @@
-#ifndef PARSING_PRIVATE_H
-#define PARSING_PRIVATE_H
+#ifndef PARSING_H
+#define PARSING_H
 
 #include "scop.h"
 
@@ -20,6 +20,7 @@ typedef struct	s_obj_file {
 	int					has_textures;
 	int					has_normals;
 	t_err				err_type;
+	t_vec3f				center_offset;
 
 	t_buf				vb;
 	t_buf				tb;

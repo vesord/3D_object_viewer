@@ -19,13 +19,15 @@ void display(t_scop scop)
 		glfwPollEvents();
 		// TODO: add terminal commands
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		process_keys(&scop);
+
+		if (!scop.obj)
+			continue ;
 
 		glBindVertexArray(scop.bufs.vao);
 		glUseProgram(scop.shaders.cur);
 
-		process_keys(&scop);
-
-		if (scop.state.enable_rotation) // TODO: add enable_auto_rotation
+		if (scop.state.enable_rotation)
 			auto_rotation(&scop.mat);
 		update_model_to_cam(&scop.mat);
 

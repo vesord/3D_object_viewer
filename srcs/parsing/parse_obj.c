@@ -1,4 +1,5 @@
 #include "parsing_private.h"
+#include "calculations.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -77,5 +78,7 @@ t_obj_data *parse_obj_file(const char *filename)
 	parse_lines(filename, file, obj_data);
 	if (obj_data->err_type == ERR_NO_ERROR)
 		fill_output_buffers(obj_data);
+	calc_center_offset(obj_data);
+	// TODO: free obj data if error
 	return obj_data;
 }

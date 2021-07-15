@@ -32,6 +32,7 @@ typedef struct	s_matrices
 {
 	t_mat4f			model_to_cam;
 	t_mat4f			cam_to_clip;
+	t_mat4f			center_translate;
 	t_transform		transf;
 }				t_matrices;
 

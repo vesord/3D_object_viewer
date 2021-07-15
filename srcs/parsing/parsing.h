@@ -11,6 +11,7 @@ typedef struct	s_obj_file {
 	int		has_textures;
 	int		has_normals;
 	t_err	err_type;
+	t_vec3f	center_offset;
 }				t_obj_data;
 
 t_obj_data *parse_obj_file(const char *filename);
