@@ -214,7 +214,7 @@ void InitBuffers() {
 GLuint makeTestShaderProgram() {
 	GLuint *shaderList;
 
-	shaderList = malloc(sizeof(GLuint) * 3);
+	shaderList = malloc(sizeof(GLuint) * 3); // TODO: protect
 	if (!shaderList) {
 		exit(1);
 	}
@@ -227,7 +227,7 @@ GLuint makeTestShaderProgram() {
 	shaderProgram = CreateShaderProgram(shaderList);
 
 	glUseProgram(shaderProgram);
-
+	// APPLY UNIFORMS MB
 	glUseProgram(0);
 	free(shaderList);
 	return shaderProgram;
@@ -389,7 +389,7 @@ int main()
 		StationaryOffset();
 		glUniformMatrix4fv(modelToCameraMatrixUnif, 1, GL_FALSE, modelToCameraMatrix);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		glDrawArrays(GL_TRIANGLES, 0, obj->index_count);
+		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 //		glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_INT, 0);
 //		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_SHORT, 0);
