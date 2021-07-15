@@ -210,29 +210,6 @@ void InitBuffers() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-/// TEST FUNCTION
-GLuint makeTestShaderProgram() {
-	GLuint *shaderList;
-
-	shaderList = malloc(sizeof(GLuint) * 3); // TODO: protect
-	if (!shaderList) {
-		exit(1);
-	}
-//	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertexShaderSrcModelCameraClipTransform);
-//	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragmentShaderSrcSmoothColor);
-	shaderList[0] = CreateShader(GL_VERTEX_SHADER, &vertex_shader_pass_vtn);
-	shaderList[1] = CreateShader(GL_FRAGMENT_SHADER, &fragment_shader_pass_vtn);
-	shaderList[2] = 0;
-
-	shaderProgram = CreateShaderProgram(shaderList);
-
-	glUseProgram(shaderProgram);
-	// APPLY UNIFORMS MB
-	glUseProgram(0);
-	free(shaderList);
-	return shaderProgram;
-}
-
 void StationaryOffset() {
 	memset(modelToCameraMatrix, 0, sizeof(float) * 16);
 
@@ -327,7 +304,7 @@ int main()
 
 	Initialization();
 	RegisterCallbacks();
-	shaderProgram = makeTestShaderProgram();
+	shaderProgram = make_gray_shader();
 
 	register_buffers(obj);
 //	InitBuffers();

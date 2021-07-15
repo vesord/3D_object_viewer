@@ -1,10 +1,5 @@
-//
-// Created by vesord on 10.07.2021.
-//
-
 #include "scop.h"
-//#include "vertexShaders.h"
-//#include "fragmentShaders.h"
+#include "shader_private.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -81,4 +76,25 @@ GLuint CreateShaderProgram(GLuint *shaderList) {
 		++shaderListIter;
 	}
 	return shaderProgram;
+}
+
+GLuint make_gray_shader() {
+	GLuint *shader_list;
+	GLuint	shader_program;
+
+	shader_list = malloc(sizeof(GLuint) * 3); // TODO: protect
+	if (!shader_list) {
+		exit(1);
+	}
+	shader_list[0] = CreateShader(GL_VERTEX_SHADER, &vertex_shader_pass_vtn);
+	shader_list[1] = CreateShader(GL_FRAGMENT_SHADER, &fragment_shader_pass_vtn);
+	shader_list[2] = 0;
+
+	shader_program = CreateShaderProgram(shader_list);
+
+	glUseProgram(shader_program);
+	// APPLY UNIFORMS MB
+	glUseProgram(0);
+	free(shader_list);
+	return shader_program;
 }

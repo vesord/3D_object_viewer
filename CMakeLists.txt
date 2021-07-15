@@ -31,6 +31,7 @@ set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/saving_buffers.c
 					srcs/parsing/fill_output_buffers.c)
 set(SHADERS_FILES   srcs/shaders/shaders.h
+					srcs/shaders/shader_private.h
 					srcs/shaders/shaders.c)
 
 add_executable(scop ${MAIN_FILES}
