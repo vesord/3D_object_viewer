@@ -3,6 +3,7 @@
 #include "shaders.h"
 #include "vertexShaders.h"
 #include "fragmentShaders.h"
+#include "events.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -66,6 +67,8 @@ void init_depth()
 	glDepthRange(z_depth_near, z_depth_far);
 	glClearDepth(depth_clear_value);
 }
+
+// SCOP BEGIN
 
 #include "calculations.h"
 
@@ -135,13 +138,39 @@ void init_buf_objects(t_buf_objects *bufs)
 	glGenVertexArrays(1, &bufs->vao); // TODO: check if protect?
 }
 
+void init_keys(t_keys *keys)
+{
+	keys->right = 0;
+	keys->left = 0;
+	keys->back = 0;
+	keys->forward = 0;
+	keys->up = 0;
+	keys->down = 0;
+	keys->enable_rotation = 0;
+	keys->change_cull = 0;
+	keys->draw_points;
+	keys->draw_lines;
+	keys->draw_triangles;
+}
+
+void init_states(t_states *states)
+{
+	states->enable_rotation = 1;
+	states->culling = GL_FRONT;
+	states->draw_type = GL_TRIANGLES;
+}
+
 void init_scop(t_scop *scop)
 {
 	scop->obj = NULL;
 	init_matrices(&scop->mat);
 	init_shaders(&scop->shaders);
 	init_buf_objects(&scop->bufs);
+	init_keys(&scop->keys);
+	init_states(&scop->state);
 }
+
+// SCOP END
 
 void initialization(t_scop *scop)
 {
@@ -151,6 +180,6 @@ void initialization(t_scop *scop)
 	init_viewport(scop->window);
 	init_culling();
 	init_depth();
-	//	init_callbacks();
+	register_callbacks(scop->window);
 	init_scop(scop);
 }

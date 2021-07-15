@@ -60,10 +60,11 @@ t_mat4f mat_mult_m4_m4(t_mat4f *m1, t_mat4f *m2)
 	return res;
 }
 
-void update_srtp(t_transform *tr)
+void update_model_to_cam(t_matrices *mat)
 {
-	tr->strp = mat_mult_m4_m4(&tr->translate, &tr->rotate);
-	tr->strp = mat_mult_m4_m4(&tr->scale, &tr->strp);
+	mat->transf.strp = mat_mult_m4_m4(&mat->transf.translate, &mat->transf.rotate);
+	mat->transf.strp = mat_mult_m4_m4(&mat->transf.scale, &mat->transf.strp);
+	mat->model_to_cam = mat->transf.strp;
 }
 
 void auto_rotation(t_matrices *mat)
@@ -72,8 +73,6 @@ void auto_rotation(t_matrices *mat)
 
 	rot_mat = get_auto_rotation_matrix();
 	mat->transf.rotate = mat_mult_m4_m4(&rot_mat, &mat->transf.rotate);
-	update_srtp(&mat->transf);
-	mat->model_to_cam = mat->transf.strp;
 }
 
 

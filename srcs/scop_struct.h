@@ -35,6 +35,28 @@ typedef struct	s_matrices
 	t_transform		transf;
 }				t_matrices;
 
+typedef struct	s_keys
+{
+	int up;
+	int down;
+	int forward;
+	int back;
+	int left;
+	int right;
+	int enable_rotation;
+	int draw_triangles;
+	int draw_lines;
+	int draw_points;
+	int change_cull; // TODO: add changing culling
+}				t_keys;
+
+typedef struct	s_states
+{
+	int		enable_rotation;
+	GLenum	draw_type;
+	GLenum	culling;
+}				t_states;
+
 typedef struct	s_scop
 {
 	GLFWwindow		*window;
@@ -42,6 +64,8 @@ typedef struct	s_scop
 	t_buf_objects	bufs;
 	t_obj_data		*obj; // TODO: change to stack memory?
 	t_matrices		mat;
+	t_keys			keys;
+	t_states		state;
 }				t_scop;
 
 

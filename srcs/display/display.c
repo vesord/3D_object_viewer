@@ -1,9 +1,19 @@
 #include "scop.h"
-#include "scop_struct.h"
 #include "calculations.h"
+#include "events.h"
+
+t_scop *get_scop(t_scop* scop_ptr)
+{
+	static t_scop *scop;
+
+	if (!scop && scop_ptr)
+		scop = scop_ptr;
+	return scop;
+}
 
 void display(t_scop scop)
 {
+	get_scop(&scop);
 	while(!glfwWindowShouldClose(scop.window))
 	{
 		glfwPollEvents();
@@ -13,12 +23,15 @@ void display(t_scop scop)
 		glBindVertexArray(scop.bufs.vao);
 		glUseProgram(scop.shaders.cur);
 
-		if (1) // TODO: add enable_auto_rotation
+		process_keys(&scop);
+
+		if (scop.state.enable_rotation) // TODO: add enable_auto_rotation
 			auto_rotation(&scop.mat);
-//		stationary_offset(&scop.mat.model_to_cam); // TODO: change to rotate
+		update_model_to_cam(&scop.mat);
+
 		glUniformMatrix4fv(scop.shaders.model_to_cam_unif, 1, GL_FALSE, (float *)&scop.mat.model_to_cam);
 		glUniformMatrix4fv(scop.shaders.cam_to_clip_unif, 1, GL_FALSE, (float *)&scop.mat.cam_to_clip);
-		glDrawElements(GL_TRIANGLES, scop.obj->index_count, GL_UNSIGNED_INT, 0);
+		glDrawElements(scop.state.draw_type, scop.obj->index_count, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 		glfwSwapBuffers(scop.window);
 	}
