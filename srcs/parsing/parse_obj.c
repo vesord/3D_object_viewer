@@ -74,11 +74,22 @@ t_obj_data *parse_obj_file(const char *filename)
 	FILE		*file;
 
 	obj_data = create_obj_data(); // TODO: protect
-	file = fopen(filename, "r"); // TODO: protect
+	file = fopen(filename, "r");
+	if (!file)
+	{
+		fprintf(stderr, "Unable to open file: %s\n", filename);
+		return NULL;
+	}
 	parse_lines(filename, file, obj_data);
 	if (obj_data->err_type == ERR_NO_ERROR)
+	{
 		fill_output_buffers(obj_data);
-	calc_center_offset(obj_data);
-	// TODO: free obj data if error
+		calc_center_offset(obj_data); // TODO: check if need protection
+	}
+	else
+	{
+//		free_obj(obj_data);
+		obj_data = NULL;
+	}
 	return obj_data;
 }

@@ -17,7 +17,7 @@ void display(t_scop scop)
 	while(!glfwWindowShouldClose(scop.window))
 	{
 		glfwPollEvents();
-		// TODO: add terminal commands
+		poll_terminal();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		process_keys(&scop);
 

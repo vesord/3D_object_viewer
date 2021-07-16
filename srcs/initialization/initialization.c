@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
 
 void init_fail(const char *err_msg)
 {
@@ -173,6 +174,20 @@ void init_scop(t_scop *scop)
 
 // SCOP END
 
+int try_init_terminal()
+{
+	static const int	stdin_fd = 0;
+	int					flags;
+
+	flags = fcntl(stdin_fd, F_GETFL, 0);
+	if (flags < 0)
+		return 0;
+	flags = flags | O_NONBLOCK;
+	if (fcntl(stdin_fd, F_SETFL, flags) == 0)
+		return 1;
+	return 0;
+}
+
 void initialization(t_scop *scop)
 {
 	init_glfw();
@@ -183,4 +198,6 @@ void initialization(t_scop *scop)
 	init_depth();
 	register_callbacks(scop->window);
 	init_scop(scop);
+	if (!try_init_terminal())
+		init_fail("Failed to set terminal nonblocking");
 }

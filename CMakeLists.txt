@@ -29,7 +29,8 @@ set(DISPLAY_FILES   srcs/display/display.h
 set(EVENTS_FILES    srcs/events/events.h
 					srcs/events/events_private.h
 					srcs/events/callbacks.c
-					srcs/events/key_actions.c)
+					srcs/events/key_actions.c
+					srcs/events/terminal.c)
 set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/parsing_private.h
 					srcs/parsing/parse_obj.c
