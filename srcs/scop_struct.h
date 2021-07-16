@@ -56,6 +56,7 @@ typedef struct	s_states
 	int		enable_rotation;
 	GLenum	draw_type;
 	GLenum	culling;
+	float	moving_step;
 }				t_states;
 
 typedef struct	s_scop

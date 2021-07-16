@@ -109,5 +109,7 @@ void		make_triangulation(t_buf *buf)
 
 	push_back(buf, data1);
 	push_back(buf, data2);
+	free(data2);
+	free(data1);
 }
 

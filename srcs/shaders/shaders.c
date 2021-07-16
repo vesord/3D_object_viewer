@@ -5,11 +5,13 @@
 
 void	update_uniforms_locations(t_shaders *shaders)
 {
-	shaders->cam_to_clip_unif = glGetUniformLocation(shaders->cur, "camera_to_clip_matrix");
-	shaders->model_to_cam_unif = glGetUniformLocation(shaders->cur, "model_to_camera_matrix");
+	shaders->cam_to_clip_unif = glGetUniformLocation(shaders->cur,
+													 "camera_to_clip_matrix");
+	shaders->model_to_cam_unif = glGetUniformLocation(shaders->cur,
+													  "model_to_camera_matrix");
 }
 
-GLuint create_shader(GLenum shader_type, const GLchar** strShaderFile)
+GLuint	create_shader(GLenum shader_type, const GLchar** strShaderFile)
 {
 	GLuint shader;
 
@@ -21,7 +23,7 @@ GLuint create_shader(GLenum shader_type, const GLchar** strShaderFile)
 	return shader;
 }
 
-GLuint create_shader_program(GLuint *shader_list) {
+GLuint	create_shader_program(GLuint *shader_list) {
 	GLuint shader_program;
 
 	shader_program = glCreateProgram();
@@ -33,7 +35,7 @@ GLuint create_shader_program(GLuint *shader_list) {
 	return shader_program;
 }
 
-GLuint create_shader_program_vert_frag(const char *vert_shader_src,
+GLuint	create_shader_program_vert_frag(const char *vert_shader_src,
 									 const char *frag_shader_src) {
 	GLuint *shader_list;
 	GLuint shader_program;

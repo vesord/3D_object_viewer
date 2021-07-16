@@ -66,4 +66,4 @@ void	*get_value(t_buf *buf, size_t index);
 size_t	get_index(t_buf *buf, void *find);
 void	buf_free(t_buf *buf);
 
-#endif //PARSING_PRIVATE_H
+#endif //PARSING_H

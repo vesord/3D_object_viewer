@@ -12,8 +12,8 @@ int main(int argc, char **argv)
 
 	initialization(&scop);
 
-	scop.obj = parse_obj_file("./models/teapot.obj");
-//	scop.obj = parse_obj_file("./models/teapot2.obj");
+//	scop.obj = parse_obj_file("./models/teapot.obj");
+	scop.obj = parse_obj_file("./models/teapot2.obj");
 //	scop.obj = parse_obj_file("./models/42.obj");
 //	scop.obj = parse_obj_file("./models/agalia.obj");
 //	scop.obj = parse_obj_file("./models/agalia2.obj");

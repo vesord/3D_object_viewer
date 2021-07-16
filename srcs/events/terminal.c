@@ -29,7 +29,8 @@ void term_open_obj(const char *filename)
 		// TODO: free old obj;
 		scop->obj = new_obj;
 		set_buf_data_from_obj(scop->obj, scop->bufs.vbo, scop->bufs.ibo); // Use after model change
-		set_vao_for_obj(scop->obj, scop->bufs.vao, scop->bufs.vbo, scop->bufs.ibo); // Use after on model change
+		set_vao_for_obj(scop->obj, scop->bufs.vao, scop->bufs.vbo,
+						scop->bufs.ibo); // Use after on model change
 		init_transform(&scop->mat.transf);
 		translate(&scop->mat.transf.rotate, &scop->obj->center_offset);
 	}

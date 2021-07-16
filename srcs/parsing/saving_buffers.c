@@ -44,16 +44,3 @@ void		buf_free(t_buf *buf)
 	buf_init(buf, buf->elem_size);
 	free(to_free);
 }
-
-size_t		get_index(t_buf *buf, void *find)
-{
-	size_t i;
-
-	i = -1;
-	while (++i < buf->count)
-		if (!memcmp(get_value(buf, i), find, buf->elem_size))
-			return i;
-	return -1;
-}
-
-// TODO: not buffer funcion

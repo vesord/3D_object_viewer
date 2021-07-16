@@ -7,7 +7,7 @@ static const char *g_vertex_shader_type_str = "vertex";
 static const char *g_geometry_shader_type_str = "geometry";
 static const char *g_fragment_shader_type_str = "fragment";
 
-void attach_shaders(GLuint shader_program, GLuint *shader_list)
+void	attach_shaders(GLuint shader_program, GLuint *shader_list)
 {
 	while (*shader_list)
 	{
@@ -16,7 +16,7 @@ void attach_shaders(GLuint shader_program, GLuint *shader_list)
 	}
 }
 
-void free_shaders(GLuint shader_program, GLuint *shader_list)
+void	free_shaders(GLuint shader_program, GLuint *shader_list)
 {
 	while (*shader_list)
 	{
@@ -26,7 +26,7 @@ void free_shaders(GLuint shader_program, GLuint *shader_list)
 	}
 }
 
-int is_shader_ok(GLuint shader, GLenum shader_type)
+int		is_shader_ok(GLuint shader, GLenum shader_type)
 {
 	GLint status;
 	GLint infoLogLength;
@@ -54,7 +54,7 @@ int is_shader_ok(GLuint shader, GLenum shader_type)
 	return 1;
 }
 
-int is_shader_program_ok(GLuint shader_program)
+int		is_shader_program_ok(GLuint shader_program)
 {
 	GLint	success;
 	GLint	info_log_len;

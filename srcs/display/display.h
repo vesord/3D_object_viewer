@@ -1,5 +1,5 @@
 #ifndef DISPLAY_H
-#define DISPLAY_H
+# define DISPLAY_H
 
 # include "scop.h"
 

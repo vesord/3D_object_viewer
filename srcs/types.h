@@ -1,9 +1,5 @@
-//
-// Created by vesord on 12.07.2021.
-//
-
 #ifndef TYPES_H
-#define TYPES_H
+# define TYPES_H
 
 typedef struct	s_vec3i {
 	int x;
@@ -49,6 +45,4 @@ typedef enum	e_error_codes {
 	ERR_PARSING_OBJ_LINE_TYPE_F
 }				t_err;
 
-
-
-#endif //TYPES_H
+#endif

@@ -22,7 +22,9 @@ set(MAIN_FILES  srcs/scop.h
 				srcs/scop_struct.h
 				srcs/main.c )
 set(CALCULATIONS_FILES  srcs/calculations/calculations.h
-	srcs/calculations/calculations.c)
+						srcs/calculations/calculations.c
+						srcs/calculations/calc_center_offset.c
+						srcs/calculations/calc_matrices.c)
 
 set(DISPLAY_FILES   srcs/display/display.h
 					srcs/display/display.c)
@@ -47,7 +49,12 @@ set(BUFFERS_FILES   srcs/buffers/buffers.h
 					srcs/buffers/buffers.c)
 
 set(INIT_FILES      srcs/initialization/initialization.h
-					srcs/initialization/initialization.c)
+					srcs/initialization/initialization_private.h
+					srcs/initialization/initialization.c
+					srcs/initialization/init_system.c
+					srcs/initialization/init_view.c
+					srcs/initialization/init_matrices.c
+					srcs/initialization/init_scop.c)
 
 add_executable(scop ${MAIN_FILES}
 					${CALCULATIONS_FILES}

@@ -1,0 +1,60 @@
+#include "scop.h"
+#include "scop_struct.h"
+#include "initialization_private.h"
+#include "shaders.h"
+#include "vertexShaders.h"
+#include "fragmentShaders.h" // TODO: check norm if const char in .h file
+
+static void	init_shaders(t_shaders *shaders)
+{
+	static const int total_shaders_count = 1;
+
+	shaders->count = total_shaders_count;
+	shaders->arr = malloc(sizeof(*shaders->arr) * shaders->count);
+	if (!shaders->arr)
+		init_fail("Not enough memory");
+	shaders->arr[0] = create_shader_program_vert_frag(vertex_shader_pass_vtn,
+													  fragment_shader_pass_vtn);
+	shaders->cur = shaders->arr[0];
+	update_uniforms_locations(shaders);
+}
+
+static void	init_buf_objects(t_buf_objects *bufs)
+{
+	glGenBuffers(1, &bufs->vbo);
+	glGenBuffers(1, &bufs->ibo);
+	glGenVertexArrays(1, &bufs->vao); // TODO: check if protect?
+}
+
+static void	init_keys(t_keys *keys)
+{
+	keys->right = 0;
+	keys->left = 0;
+	keys->back = 0;
+	keys->forward = 0;
+	keys->up = 0;
+	keys->down = 0;
+	keys->enable_rotation = 0;
+	keys->change_cull = 0;
+	keys->draw_points = 0;
+	keys->draw_lines = 0;
+	keys->draw_triangles = 0;
+}
+
+static void	init_states(t_states *states)
+{
+	states->enable_rotation = 1;
+	states->culling = GL_FRONT;
+	states->draw_type = GL_TRIANGLES;
+	states->moving_step = 0.1f;
+}
+
+void		init_scop(t_scop *scop)
+{
+	scop->obj = NULL;
+	init_matrices(&scop->mat);
+	init_shaders(&scop->shaders);
+	init_buf_objects(&scop->bufs);
+	init_keys(&scop->keys);
+	init_states(&scop->state);
+}
