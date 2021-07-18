@@ -50,6 +50,7 @@ typedef struct	s_keys
 	int draw_triangles;
 	int draw_lines;
 	int draw_points;
+	int apply_texture;
 	int change_cull; // TODO: add changing culling
 }				t_keys;
 
@@ -58,7 +59,8 @@ typedef struct	s_states
 	int		enable_rotation;
 	GLenum	draw_type;
 	GLenum	culling;
-	float	moving_step;
+	float	moving_step; // TODO: add step change
+	int		apply_texture;
 }				t_states;
 
 typedef struct	s_scop

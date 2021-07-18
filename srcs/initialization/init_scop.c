@@ -49,21 +49,21 @@ static void	init_states(t_states *states)
 	states->culling = GL_FRONT;
 	states->draw_type = GL_TRIANGLES;
 	states->moving_step = 0.1f;
+	states->apply_texture = 0;
 }
 
 static void	init_textures(t_scop *scop)
 {
 	scop->bmp = NULL;
-//	glGenTextures(1, &scop->texture_obj);
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture (GL_TEXTURE_2D, scop->texture_obj);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-//	glBindTexture(GL_TEXTURE_2D, 0);
+	glGenTextures(1, &scop->texture_obj);
+	glBindTexture (GL_TEXTURE_2D, scop->texture_obj);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

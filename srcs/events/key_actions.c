@@ -44,5 +44,10 @@ void		process_keys(t_scop *scop)
 		scop->keys.enable_rotation = 0;
 		scop->state.enable_rotation = !scop->state.enable_rotation;
 	}
+	if (scop->keys.apply_texture)
+	{
+		scop->keys.apply_texture = 0;
+		scop->state.apply_texture = !scop->state.apply_texture;
+	}
 	// TODO: culling
 }

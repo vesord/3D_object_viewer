@@ -40,6 +40,8 @@ void 		key_callback(GLFWwindow* w, int key, int scancode,
 		get_scop(NULL)->keys.change_cull = set_value;
 	if (key == GLFW_KEY_SPACE)
 		get_scop(NULL)->keys.enable_rotation = set_value;
+	if (key == GLFW_KEY_T)
+		get_scop(NULL)->keys.apply_texture = set_value;
 	if (key == GLFW_KEY_ESCAPE)
 		glfwSetWindowShouldClose(w, GL_TRUE);
 }
