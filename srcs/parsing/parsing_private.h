@@ -22,6 +22,9 @@ typedef struct	s_obj_file {
 	t_err				err_type;
 	t_vec3f				center_offset;
 
+	t_vec3f				max_coords;
+	t_vec3f				min_coords;
+
 	t_buf				vb;
 	t_buf				tb;
 	t_buf				nb;
@@ -57,7 +60,8 @@ t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
 								t_obj_data *obj_file, size_t *offset);
 void	make_triangulation(t_buf *buf);
 
-void	fill_output_buffers(t_obj_data *od);
+void	fill_output_data(t_obj_data *od);
+void		calc_center_offset(t_obj_data *obj);
 
 // VECTORS // TODO:change location??
 void	push_back(t_buf *buf, void *data);

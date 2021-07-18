@@ -72,9 +72,9 @@ const GLchar* vertex_shader_pass_vtn =
 "layout (location = 1) in vec2 texture;"
 "layout (location = 2) in vec3 normal;"
 
-"flat out vec3 normal_pass;"
+"smooth out vec3 normal_pass;"
 "smooth out vec2 texture_pass;"
-"flat out vec4 position_pass;"
+"smooth out vec4 position_pass;"
 "flat out int vertex_id_pass;"
 
 "uniform mat4 camera_to_clip_matrix;"

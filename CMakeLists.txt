@@ -24,7 +24,7 @@ set(MAIN_FILES  srcs/scop.h
 				srcs/main.c )
 set(CALCULATIONS_FILES  srcs/calculations/calculations.h
 						srcs/calculations/calculations.c
-						srcs/calculations/calc_center_offset.c
+	srcs/parsing/calc_center_offset.c
 						srcs/calculations/calc_matrices.c)
 
 set(DISPLAY_FILES   srcs/display/display.h
@@ -40,7 +40,7 @@ set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/parsing_utils.c
 					srcs/parsing/line_type_parsers.c
 					srcs/parsing/saving_buffers.c
-					srcs/parsing/fill_output_buffers.c
+	srcs/parsing/fill_output_data.c
 					srcs/parsing/bmp_load.h
 					srcs/parsing/bmp_load.c)
 set(SHADERS_FILES   srcs/shaders/shaders.h

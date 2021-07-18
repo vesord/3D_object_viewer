@@ -41,8 +41,8 @@ const GLchar* fragment_shader_pass_vtn =
 "#version 460 core\n;"
 
 "smooth in vec2 texture_pass;"
-"flat in vec3 normal_pass;"
-"flat in vec4 position_pass;"
+"smooth in vec3 normal_pass;"
+"smooth in vec4 position_pass;"
 "flat in int vertex_id_pass;"
 
 "uniform sampler2D texture_in;"
@@ -53,19 +53,12 @@ const GLchar* fragment_shader_pass_vtn =
 "void main() {"
 "if (has_textures == 0)"
 "{"
-"float intense = (vertex_id_pass % 8) / 10.f + 0.1f;"
+"float intense = (vertex_id_pass % 10) / 10.f + 0.1f;"
 "output_color = vec4(intense, intense, intense, 1.f);"
 "}"
 "else"
 "{"
-"float pos = (vertex_id_pass % 3) / 3.f + 0.1f;"
-//"output_color = vec4(1.f, 1.f, 1.f, 1.f);"
-"vec2 pos2 = vec2(vertex_id_pass / 20, vertex_id_pass / 20);"
-"vec4 res = texture(texture_in, vec2(0.9f, 0.2f));"
-"if (res.z == 0.f && res.y == 0.f && res.x == 0.f) "
-"output_color = vec4(1.f);"
-"else "
-"output_color = res;"
+"output_color = texture(texture_in, texture_pass);"
 "}"
 "}";
 #endif //FRAGMENTSHADERSIMPLE_H
