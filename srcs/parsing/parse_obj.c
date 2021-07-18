@@ -67,6 +67,24 @@ void parse_lines(const char *fname, FILE *file, t_obj_data *obj_file)
 	free(line);
 }
 
+void		free_obj(t_obj_data **obj_ptr)
+{
+	if (!obj_ptr || !*obj_ptr)
+		return ;
+	buf_free(&(*obj_ptr)->vb);
+	buf_free(&(*obj_ptr)->vb_out);
+	buf_free(&(*obj_ptr)->tb);
+	buf_free(&(*obj_ptr)->tb_out);
+	buf_free(&(*obj_ptr)->nb);
+	buf_free(&(*obj_ptr)->nb_out);
+	buf_free(&(*obj_ptr)->ib);
+	buf_free(&(*obj_ptr)->ib_out);
+	free((*obj_ptr)->vertex_buffer_data);
+	free((*obj_ptr)->index_buffer_data);
+	free(*obj_ptr);
+	*obj_ptr = NULL;
+}
+
 t_obj_data *parse_obj_file(const char *filename)
 {
 	t_obj_data	*obj_data;
@@ -81,14 +99,9 @@ t_obj_data *parse_obj_file(const char *filename)
 	}
 	parse_lines(filename, file, obj_data);
 	if (obj_data->err_type == ERR_NO_ERROR)
-	{
-		fill_output_data(obj_data);
-		 // TODO: check if need protection
-	}
+		fill_output_data(obj_data); // TODO: protect
 	else
-	{
-//		free_obj(obj_data);
-		obj_data = NULL;
-	} // TODO: add closing file;
+		free_obj(&obj_data);
+	fclose(file);
 	return obj_data;
 }

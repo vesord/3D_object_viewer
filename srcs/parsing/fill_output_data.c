@@ -11,7 +11,7 @@ static void	fill_buffers(t_obj_data *od)
 	int i;
 
 	i = -1;
-	while (++i < od->ib.count) // TODO: check outofmemory
+	while (++i < od->ib.count) // TODO: check out of memory
 	{
 		push_back(&od->vb_out, get_value(&od->vb, ((t_vec3i*)get_value(&od->ib, i))->x - 1));
 		if (od->has_textures)
@@ -39,6 +39,7 @@ static void	join_buffers(t_obj_data *od)
 	memcpy((char*)od->vertex_buffer_data + vbo_size, od->tb_out.data, tbo_size);
 	memcpy((char*)od->vertex_buffer_data + vbo_size + tbo_size, od->nb_out.data, nbo_size);
 	od->index_buffer_data = od->ib_out.data;
+	buf_init(&od->ib_out, od->ib_out.elem_size);
 }
 
 /*

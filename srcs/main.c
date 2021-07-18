@@ -24,8 +24,8 @@ int main(int argc, char **argv)
 
 	if (scop.obj)
 	{
-		set_buf_data_from_obj(scop.obj, scop.bufs.vbo, scop.bufs.ibo); // Use after model change
-		set_vao_for_obj(scop.obj, scop.bufs.vao, scop.bufs.vbo, scop.bufs.ibo); // Use after on model change
+		set_buf_data_from_obj(scop.obj, scop.bufs.vbo, scop.bufs.ibo);
+		set_vao_for_obj(scop.obj, scop.bufs.vao, scop.bufs.vbo, scop.bufs.ibo);
 		translate(&scop.mat.transf.rotate, &scop.obj->center_offset);
 	}
 

@@ -26,7 +26,7 @@ void term_open_obj(const char *filename)
 	new_obj = parse_obj_file(filename);
 	if (new_obj)
 	{
-		// TODO: free old obj;
+		free_obj(&scop->obj);
 		scop->obj = new_obj;
 		set_buf_data_from_obj(scop->obj, scop->bufs.vbo, scop->bufs.ibo);
 		set_vao_for_obj(scop->obj, scop->bufs.vao, scop->bufs.vbo,

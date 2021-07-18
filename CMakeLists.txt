@@ -40,7 +40,7 @@ set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/parsing_utils.c
 					srcs/parsing/line_type_parsers.c
 					srcs/parsing/saving_buffers.c
-	srcs/parsing/fill_output_data.c
+					srcs/parsing/fill_output_data.c
 					srcs/parsing/bmp_load.h
 					srcs/parsing/bmp_load.c)
 set(SHADERS_FILES   srcs/shaders/shaders.h
