@@ -58,15 +58,13 @@ static int			validate_bmp_data(t_bmp_data *bmp_file)
 
 static int			read_bmp_data(int fd, t_bmp_data *bmp_file)
 {
-	int res; // TODO: remove
-
 	bmp_file->data = malloc(bmp_file->bmi.img_size);
 	if (!bmp_file->data)
 	{
 		fprintf(stderr, "Not enough memory\n");
 		return -1;
 	}
-	res = lseek(fd, bmp_file->bfh.offset_to_color_bits, SEEK_SET);
+	lseek(fd, bmp_file->bfh.offset_to_color_bits, SEEK_SET);
 	if (read(fd, bmp_file->data, bmp_file->bmi.img_size) < 0)
 	{
 		fprintf(stderr, "Cant read pixel data\n");
@@ -103,6 +101,10 @@ t_bmp_data *bmp_load(const char *filename) {
 		validate_bmp_data(bmp_file) < 0 ||
 		read_bmp_data(fd, bmp_file) < 0)
 	{
+		if (fd < 0)
+			fprintf(stderr, "Failed to open file %s\n", filename);
+		else
+			close(fd);
 		free(bmp_file);
 		return NULL;
 	}
@@ -110,33 +112,11 @@ t_bmp_data *bmp_load(const char *filename) {
 	return bmp_file;
 }
 
-
-
-
-//// TEXTURES
-//
-//void initTexture() {
-//	GLuint texture;
-//
-//	glEnable(GL_TEXTURE_2D);
-//
-//	glGenTextures (1, &texture);
-//	glBindTexture (GL_TEXTURE_2D, texture);
-//
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//
-//	t_bmp_data *bmp_file;
-//
-//	bmp_file =
-//
-//	bmp_file = bmp_load("Star.bmp");
-//	if (!image)
-//		exit(1);
-//	fixImage(image, width, height, 4);
-//
-//	gluBuild2DMipmaps(GL_TEXTURE_2D, 4, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
-//	free(image);
-//}
+void	free_bmp(t_bmp_data **bmp_ptr)
+{
+	if (!bmp_ptr || !*bmp_ptr)
+		return;
+	free((*bmp_ptr)->data);
+	free(*bmp_ptr);
+	*bmp_ptr = NULL;
+}

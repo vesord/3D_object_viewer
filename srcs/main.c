@@ -29,25 +29,18 @@ int main(int argc, char **argv)
 		translate(&scop.mat.transf.rotate, &scop.obj->center_offset);
 	}
 
-//	scop.bmp = bmp_load("./textures/pony.bmp");
+	scop.bmp = bmp_load("./textures/pony.bmp");
 //	scop.bmp = bmp_load("./textures/cat.bmp");
-	scop.bmp = bmp_load("./textures/star.bmp");
-
-	unsigned char *fucking_color = malloc(scop.bmp->bmi.img_size);
-	for (int i = 0; i < scop.bmp->bmi.img_size; ++i)
-	{
-		fucking_color[i] = 174;
-	}
+//	scop.bmp = bmp_load("./textures/star.bmp");
 
 	if (scop.bmp)
 	{
-		glBindTexture (GL_TEXTURE_2D, scop.texture_obj);	// TODO: change format depending on bmp file
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, scop.bmp->bmi.width,
-					   scop.bmp->bmi.height);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-						scop.bmp->bmi.width, scop.bmp->bmi.height, GL_BGRA,
-						GL_UNSIGNED_BYTE, scop.bmp->data);
+		glBindTexture (GL_TEXTURE_2D, scop.texture_obj);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, scop.bmp->bmi.width,
+					 scop.bmp->bmi.height, 0, GL_BGRA,
+					 GL_UNSIGNED_BYTE, scop.bmp->data);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		free_bmp(&scop.bmp);
 	}
 
 	// TODO: add help message

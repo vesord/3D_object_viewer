@@ -28,17 +28,35 @@ void term_open_obj(const char *filename)
 	{
 		// TODO: free old obj;
 		scop->obj = new_obj;
-		set_buf_data_from_obj(scop->obj, scop->bufs.vbo, scop->bufs.ibo); // Use after model change
+		set_buf_data_from_obj(scop->obj, scop->bufs.vbo, scop->bufs.ibo);
 		set_vao_for_obj(scop->obj, scop->bufs.vao, scop->bufs.vbo,
-						scop->bufs.ibo); // Use after on model change
+						scop->bufs.ibo);
 		init_transform(&scop->mat.transf);
 		translate(&scop->mat.transf.rotate, &scop->obj->center_offset);
 	}
 }
 
-void term_open_texture()
+void term_open_texture(const char *filename)
 {
-	fprintf(stdout, "Not implemented yet\n");
+	t_scop		*scop;
+	t_bmp_data	*new_bmp;
+	GLuint		format;
+
+	scop = get_scop(NULL);
+	new_bmp = bmp_load(filename);
+	if (new_bmp)
+	{
+		scop->bmp = new_bmp;
+		format = GL_BGR;
+		if (scop->bmp->bmi.bpp == 32)
+			format = GL_BGRA;
+		glBindTexture (GL_TEXTURE_2D, scop->texture_obj);	// TODO: change format depending on bmp file
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, scop->bmp->bmi.width,
+					 scop->bmp->bmi.height, 0, format,
+					 GL_UNSIGNED_BYTE, scop->bmp->data);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		free_bmp(&scop->bmp);
+	}
 }
 
 /*
@@ -56,7 +74,7 @@ void exec_line(const char *line)
 	else if (line[0] == 'o' && line[1] == ' ')
 		term_open_obj(line + 2);
 	else if (line[0] == 't' && line[1] == ' ')
-		term_open_texture(line);
+		term_open_texture(line + 2);
 }
 
 void poll_terminal()

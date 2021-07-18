@@ -33,6 +33,7 @@ typedef struct	s_bmp_file
 
 }				t_bmp_data;
 
-t_bmp_data *bmp_load(const char *filename);
+t_bmp_data	*bmp_load(const char *filename);
+void		free_bmp(t_bmp_data **bmp_ptr);
 
 #endif

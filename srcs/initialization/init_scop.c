@@ -41,6 +41,7 @@ static void	init_keys(t_keys *keys)
 	keys->draw_points = 0;
 	keys->draw_lines = 0;
 	keys->draw_triangles = 0;
+	keys->apply_texture = 0;
 }
 
 static void	init_states(t_states *states)
