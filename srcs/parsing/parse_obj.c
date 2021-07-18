@@ -90,6 +90,6 @@ t_obj_data *parse_obj_file(const char *filename)
 	{
 //		free_obj(obj_data);
 		obj_data = NULL;
-	}
+	} // TODO: add closing file;
 	return obj_data;
 }

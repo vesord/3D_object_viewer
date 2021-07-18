@@ -16,6 +16,7 @@ include_directories(srcs/events)
 include_directories(srcs/buffers)
 include_directories(srcs/initialization)
 include_directories(srcs/display)
+include_directories(srcs/bmp_load)
 
 set(MAIN_FILES  srcs/scop.h
 				srcs/types.h
@@ -39,7 +40,9 @@ set(PARSING_FILES   srcs/parsing/parsing.h
 					srcs/parsing/parsing_utils.c
 					srcs/parsing/line_type_parsers.c
 					srcs/parsing/saving_buffers.c
-					srcs/parsing/fill_output_buffers.c)
+					srcs/parsing/fill_output_buffers.c
+					srcs/parsing/bmp_load.h
+					srcs/parsing/bmp_load.c)
 set(SHADERS_FILES   srcs/shaders/shaders.h
 					srcs/shaders/shader_private.h
 					srcs/shaders/shaders.c

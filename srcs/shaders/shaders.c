@@ -5,10 +5,15 @@
 
 void	update_uniforms_locations(t_shaders *shaders)
 {
+	GLint sampler_unif;
+//
 	shaders->cam_to_clip_unif = glGetUniformLocation(shaders->cur,
 													 "camera_to_clip_matrix");
 	shaders->model_to_cam_unif = glGetUniformLocation(shaders->cur,
 													  "model_to_camera_matrix");
+	shaders->has_textures_unif = glGetUniformLocation(shaders->cur, "has_textures");
+//	sampler_unif = glGetUniformLocation(shaders->cur, "texture_in");
+//	glUniform1i(sampler_unif, 0);
 }
 
 GLuint	create_shader(GLenum shader_type, const GLchar** strShaderFile)

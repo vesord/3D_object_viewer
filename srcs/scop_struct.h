@@ -3,6 +3,7 @@
 
 #include "scop.h"
 #include "parsing.h"
+#include "bmp_load.h"
 
 typedef struct	s_shaders
 {
@@ -11,6 +12,7 @@ typedef struct	s_shaders
 	GLuint	count;
 	GLint	model_to_cam_unif;
 	GLint	cam_to_clip_unif;
+	GLint	has_textures_unif;
 }				t_shaders;
 
 typedef struct	s_buf_objects
@@ -65,6 +67,8 @@ typedef struct	s_scop
 	t_shaders		shaders;
 	t_buf_objects	bufs;
 	t_obj_data		*obj; // TODO: change to stack memory?
+	t_bmp_data		*bmp;
+	GLuint			texture_obj;
 	t_matrices		mat;
 	t_keys			keys;
 	t_states		state;

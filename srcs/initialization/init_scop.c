@@ -16,7 +16,9 @@ static void	init_shaders(t_shaders *shaders)
 	shaders->arr[0] = create_shader_program_vert_frag(vertex_shader_pass_vtn,
 													  fragment_shader_pass_vtn);
 	shaders->cur = shaders->arr[0];
+	glUseProgram(shaders->cur);
 	update_uniforms_locations(shaders);
+	glUseProgram(0);
 }
 
 static void	init_buf_objects(t_buf_objects *bufs)
@@ -49,6 +51,22 @@ static void	init_states(t_states *states)
 	states->moving_step = 0.1f;
 }
 
+static void	init_textures(t_scop *scop)
+{
+	scop->bmp = NULL;
+//	glGenTextures(1, &scop->texture_obj);
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture (GL_TEXTURE_2D, scop->texture_obj);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+//	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
 void		init_scop(t_scop *scop)
 {
 	scop->obj = NULL;
@@ -57,4 +75,5 @@ void		init_scop(t_scop *scop)
 	init_buf_objects(&scop->bufs);
 	init_keys(&scop->keys);
 	init_states(&scop->state);
+	init_textures(scop);
 }
