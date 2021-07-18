@@ -12,7 +12,7 @@ typedef struct	s_shaders
 	GLuint	count;
 	GLint	model_to_cam_unif;
 	GLint	cam_to_clip_unif;
-	GLint	has_textures_unif;
+	GLint	shading_type_unif;
 }				t_shaders;
 
 typedef struct	s_buf_objects
@@ -60,7 +60,7 @@ typedef struct	s_states
 	GLenum	draw_type;
 	GLenum	culling;
 	float	moving_step; // TODO: add step change
-	int		apply_texture;
+	int		shading_type;
 }				t_states;
 
 typedef struct	s_scop

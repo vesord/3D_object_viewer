@@ -50,7 +50,7 @@ static void	init_states(t_states *states)
 	states->culling = GL_FRONT;
 	states->draw_type = GL_TRIANGLES;
 	states->moving_step = 0.1f;
-	states->apply_texture = 0;
+	states->shading_type = 0;
 }
 
 static void	init_textures(t_scop *scop)

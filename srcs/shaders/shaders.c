@@ -9,7 +9,7 @@ void	update_uniforms_locations(t_shaders *shaders)
 													 "camera_to_clip_matrix");
 	shaders->model_to_cam_unif = glGetUniformLocation(shaders->cur,
 													  "model_to_camera_matrix");
-	shaders->has_textures_unif = glGetUniformLocation(shaders->cur, "has_textures");
+	shaders->shading_type_unif = glGetUniformLocation(shaders->cur, "shading_type");
 }
 
 GLuint	create_shader(GLenum shader_type, const GLchar** strShaderFile)

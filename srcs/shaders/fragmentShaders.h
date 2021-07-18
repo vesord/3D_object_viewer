@@ -46,12 +46,12 @@ const GLchar* fragment_shader_pass_vtn =
 "flat in int vertex_id_pass;"
 
 "uniform sampler2D texture_in;"
-"uniform int has_textures;"
+"uniform int shading_type;"
 
 "out vec4 output_color;"
 
 "void main() {"
-"if (has_textures == 0)"
+"if (shading_type == 0)"
 "{"
 "float intense = (vertex_id_pass % 10) / 10.f + 0.1f;"
 "output_color = vec4(intense, intense, intense, 1.f);"

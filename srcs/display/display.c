@@ -17,7 +17,7 @@ static void	apply_uniforms(t_scop *scop)
 					   (float *)&scop->mat.model_to_cam);
 	glUniformMatrix4fv(scop->shaders.cam_to_clip_unif, 1, GL_FALSE,
 					   (float *)&scop->mat.cam_to_clip);
-	glUniform1i(scop->shaders.has_textures_unif, scop->state.apply_texture); // TODO: change 1 to scop.state.has_textures;
+	glUniform1i(scop->shaders.shading_type_unif, scop->state.shading_type);
 }
 
 void	display(t_scop scop)

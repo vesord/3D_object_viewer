@@ -47,7 +47,7 @@ void		process_keys(t_scop *scop)
 	if (scop->keys.apply_texture)
 	{
 		scop->keys.apply_texture = 0;
-		scop->state.apply_texture = !scop->state.apply_texture;
+		scop->state.shading_type = !scop->state.shading_type;
 	}
 	// TODO: culling
 }
