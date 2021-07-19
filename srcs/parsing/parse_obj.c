@@ -1,6 +1,8 @@
 #include "parsing_private.h"
+
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 /*
 ** Order of these functions must be the same as order of
@@ -50,7 +52,7 @@ void parse_lines(const char *fname, FILE *file, t_obj_data *obj_file)
 	line = NULL;
 	line_buf = 0;
 	line_n = 0;
-	// TODO: reset errno
+	errno = 0;
 	while (getline(&line, &line_buf, file) >= 0)
 	{
 		if (parse_line(line, obj_file) != ERR_NO_ERROR)
@@ -59,8 +61,7 @@ void parse_lines(const char *fname, FILE *file, t_obj_data *obj_file)
 		line = NULL;
 		line_n++;
 	}
-	// TODO: check errno if getline fails
-	if (obj_file->err_type)
+	if (obj_file->err_type || errno)
 		fprintf(stderr, "Error while parsing file %s in line %lu\n%s\n"
 						"Error code: %i\n",
 						fname, line_n, line, obj_file->err_type);
@@ -90,18 +91,25 @@ t_obj_data *parse_obj_file(const char *filename)
 	t_obj_data	*obj_data;
 	FILE		*file;
 
-	obj_data = create_obj_data(); // TODO: protect
-	file = fopen(filename, "r");
-	if (!file)
+	errno = 0;
+	if (!(obj_data = create_obj_data()))
+		return NULL;
+	if (!(file = fopen(filename, "r")))
 	{
 		fprintf(stderr, "Unable to open file: %s\n", filename);
+		free_obj(&obj_data);
 		return NULL;
 	}
 	parse_lines(filename, file, obj_data);
 	if (obj_data->err_type == ERR_NO_ERROR)
-		fill_output_data(obj_data); // TODO: protect
-	else
+		fill_output_data(obj_data);
+	if (obj_data->err_type != ERR_NO_ERROR || errno)
+	{
+		fprintf(stderr, "Unable to read file. Error code: %d\n",
+				obj_data->err_type);
 		free_obj(&obj_data);
+		return NULL;
+	}
 	fclose(file);
 	return obj_data;
 }

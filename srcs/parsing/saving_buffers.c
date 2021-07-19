@@ -1,5 +1,7 @@
 #include "parsing_private.h"
+
 #include <string.h>
+#include <errno.h>
 
 static void	realloc_if_need(t_buf *buf)
 {
@@ -24,8 +26,10 @@ void		*get_value(t_buf *buf, size_t index)
 
 void		push_back(t_buf *buf, void *data)
 {
-	realloc_if_need(buf); // TODO: protect
-	memcpy(get_value(buf, buf->count++), data, buf->elem_size);
+	errno = 0;
+	realloc_if_need(buf);
+	if (!errno)
+		memcpy(get_value(buf, buf->count++), data, buf->elem_size);
 }
 
 void		buf_init(t_buf *buf, size_t size)

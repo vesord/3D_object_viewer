@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 void	update_uniforms_locations(t_shaders *shaders)
 {
@@ -53,6 +54,7 @@ char	*load_shader(const char *filename)
 	if (!(src = calloc(1, 1)))
 		return NULL;
 	buf_len = 0;
+	errno = 0;
 	while (getline(&line, &buf_len, file) >= 0)
 	{
 		if (!(tmp = ft_strjoin(src, line)))
@@ -62,6 +64,8 @@ char	*load_shader(const char *filename)
 		free(line);
 		line = NULL;
 	}
+	if (errno)
+		return NULL;
 	return (src);
 }
 

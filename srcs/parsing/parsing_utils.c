@@ -7,7 +7,8 @@ t_obj_data	*create_obj_data(void)
 {
 	t_obj_data *obj_data;
 
-	obj_data = malloc(sizeof(t_obj_data));	// TODO: protect
+	if (!(obj_data = malloc(sizeof(t_obj_data))))
+		return NULL;
 	obj_data->vertex_buffer_data = NULL;
 	obj_data->index_buffer_data = NULL;
 	obj_data->index_buffer_count = 0;
@@ -15,7 +16,6 @@ t_obj_data	*create_obj_data(void)
 	obj_data->has_normals = 0;
 	obj_data->has_textures = 0;
 	obj_data->err_type = ERR_NO_ERROR;
-
 	buf_init(&obj_data->vb, sizeof(t_vec4f));
 	buf_init(&obj_data->vb_out, sizeof(t_vec4f));
 	buf_init(&obj_data->tb, sizeof(t_vec2f));
@@ -24,7 +24,6 @@ t_obj_data	*create_obj_data(void)
 	buf_init(&obj_data->nb_out, sizeof(t_vec3f));
 	buf_init(&obj_data->ib, sizeof(t_vec3i));
 	buf_init(&obj_data->ib_out, sizeof(int));
-
 	obj_data->flt = FACE_LINE_TYPE_NONE;
 	return obj_data;
 }
@@ -58,14 +57,14 @@ int			parse_int_lt(const char *str, t_obj_data *obj_file, size_t *offset)
 	char	*end_ptr;
 
 	convert_res = strtol(str, &end_ptr, 10);
-	if (convert_res >= INT32_MAX || convert_res <= INT32_MIN)
+	if (convert_res >= INT32_MAX || convert_res <= INT32_MIN || errno)
 		obj_file->err_type = ERR_PARSING_OBJ_LINE_TYPE_F;
 	*offset += end_ptr - str;
 	return (int)convert_res;;
 }
 
 t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
-								t_obj_data *obj_file, size_t *offset) // TODO: check if 1 or 2 points in line (err)
+								t_obj_data *obj_file, size_t *offset)
 {
 	t_vec3i				indexes;
 	t_face_line_type	flt_cur;
@@ -102,8 +101,10 @@ void		make_triangulation(t_buf *buf)
 	void *data1;
 	void *data2;
 
-	data1 = malloc(buf->elem_size); // TODO: protect
-	data2 = malloc(buf->elem_size); // TODO: protect
+	data1 = malloc(buf->elem_size);
+	data2 = malloc(buf->elem_size);
+	if (errno)
+		return ;
 	memcpy(data1, ((char*)buf->data + (buf->count - 3) * buf->elem_size), buf->elem_size);
 	memcpy(data2, ((char*)buf->data + (buf->count - 1) * buf->elem_size), buf->elem_size);
 

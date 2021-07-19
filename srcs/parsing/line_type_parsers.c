@@ -1,6 +1,7 @@
 #include "parsing_private.h"
 #include <stdio.h>
 #include <ctype.h>
+#include <errno.h>
 
 void parse_skip_line_type(const char *line, t_obj_data *obj_file)
 {
@@ -47,7 +48,7 @@ void parse_normal_line_type(const char *line, t_obj_data *obj_file)
 	offset = 0;
 	while (++i < 3)
 		*(&(normal.x) + i) = parse_float_lt(line + offset, obj_file, &offset);
-	push_back(&obj_file->nb, &normal); // TODO: normalize normal
+	push_back(&obj_file->nb, &normal);
 }
 
 void parse_face_line_type(const char *line, t_obj_data *obj_file)
@@ -59,13 +60,14 @@ void parse_face_line_type(const char *line, t_obj_data *obj_file)
 	points_count = 0;
 	line += 2;
 	offset = 0;
+	errno = 0;
 	while (*(line + offset) != 0)
 	{
 		if (points_count > 2)
 			make_triangulation(&obj_file->ib);
 		cur_index = parse_face_point(line, &obj_file->flt,
 									 obj_file, &offset);
-		if (obj_file->err_type)
+		if (obj_file->err_type || errno)
 			break;
 		push_back(&obj_file->ib, &cur_index);
 		++points_count;

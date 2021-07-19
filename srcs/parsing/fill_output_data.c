@@ -1,6 +1,8 @@
 #include "parsing_private.h"
+
 #include <string.h>
 #include <math.h>
+#include <errno.h>
 
 /*
 ** There could be more effective algorithm
@@ -11,7 +13,8 @@ static void	fill_buffers(t_obj_data *od)
 	int i;
 
 	i = -1;
-	while (++i < od->ib.count) // TODO: check out of memory
+	errno = 0;
+	while (++i < od->ib.count)
 	{
 		push_back(&od->vb_out, get_value(&od->vb, ((t_vec3i*)get_value(&od->ib, i))->x - 1));
 		if (od->has_textures)
@@ -19,6 +22,8 @@ static void	fill_buffers(t_obj_data *od)
 		if (od->has_normals)
 			push_back(&od->nb_out, get_value(&od->nb, ((t_vec3i*)get_value(&od->ib, i))->z - 1));
 		push_back(&od->ib_out, &i);
+		if (errno)
+			return ;
 	}
 	od->index_buffer_count = i;
 	od->vertex_buffer_count = i;
@@ -34,7 +39,9 @@ static void	join_buffers(t_obj_data *od)
 	tbo_size = od->tb_out.elem_size * od->tb_out.count;
 	nbo_size = od->nb_out.elem_size * od->nb_out.count;
 
-	od->vertex_buffer_data = malloc(vbo_size + tbo_size + nbo_size); // TODO: protect
+	od->vertex_buffer_data = malloc(vbo_size + tbo_size + nbo_size);
+	if (errno)
+		return ;
 	memcpy((char*)od->vertex_buffer_data, od->vb_out.data, vbo_size);
 	memcpy((char*)od->vertex_buffer_data + vbo_size, od->tb_out.data, tbo_size);
 	memcpy((char*)od->vertex_buffer_data + vbo_size + tbo_size, od->nb_out.data, nbo_size);
@@ -165,9 +172,15 @@ void	fill_output_data(t_obj_data *od)
 	if (od->flt == FACE_LINE_TYPE_VN || od->flt == FACE_LINE_TYPE_VTN)
 		od->has_normals = 1;
 	fill_buffers(od);
+	if (errno)
+		return ;
 	calc_center_offset(od);
 	if (od->has_textures == 0)
 		gen_texture_locations(od);
+	if (errno)
+		return ;
 	join_buffers(od);
+	if (errno)
+		return ;
 	free_resourses(od);
 }

@@ -1,7 +1,7 @@
 #ifndef PARSING_H
-#define PARSING_H
+# define PARSING_H
 
-#include "scop.h"
+# include "scop.h"
 
 typedef enum	e_face_line_type {
 	FACE_LINE_TYPE_NONE,
@@ -11,7 +11,6 @@ typedef enum	e_face_line_type {
 	FACE_LINE_TYPE_VTN
 }				t_face_line_type;
 
-// TODO: update obj_file_init()
 typedef struct	s_obj_file {
 	float				*vertex_buffer_data;
 	int					*index_buffer_data;
@@ -21,20 +20,16 @@ typedef struct	s_obj_file {
 	int					has_normals;
 	t_err				err_type;
 	t_vec3f				center_offset;
-
 	t_vec3f				max_coords;
 	t_vec3f				min_coords;
-
 	t_buf				vb;
 	t_buf				tb;
 	t_buf				nb;
 	t_buf				ib;
-
 	t_buf				vb_out;
 	t_buf				tb_out;
 	t_buf				nb_out;
 	t_buf				ib_out;
-
 	t_face_line_type	flt;
 }				t_obj_data;
 
@@ -46,28 +41,28 @@ typedef enum	e_line_type {
 	LINE_TYPE_FACE
 }				t_line_type;
 
-typedef void (*t_line_type_parser)(const char *line, t_obj_data *obj_file);
+typedef void(*t_line_type_parser)(const char *line, t_obj_data *obj_file);
 
-void parse_skip_line_type(const char *line, t_obj_data *obj_file);
-void parse_vertex_line_type(const char *line, t_obj_data *obj_file);
-void parse_texture_line_type(const char *line, t_obj_data *obj_file);
-void parse_normal_line_type(const char *line, t_obj_data *obj_file);
-void parse_face_line_type(const char *line, t_obj_data *obj_file);
+void		parse_skip_line_type(const char *line, t_obj_data *obj_file);
+void		parse_vertex_line_type(const char *line, t_obj_data *obj_file);
+void		parse_texture_line_type(const char *line, t_obj_data *obj_file);
+void		parse_normal_line_type(const char *line, t_obj_data *obj_file);
+void		parse_face_line_type(const char *line, t_obj_data *obj_file);
 
-t_obj_data *create_obj_data();
-float parse_float_lt(const char *str, t_obj_data* obj_file, size_t *offset);
+t_obj_data	*create_obj_data();
+float		parse_float_lt(const char *str, t_obj_data* obj_file,
+							size_t *offset);
 t_vec3i		parse_face_point(const char *str, t_face_line_type *flt_prev,
 								t_obj_data *obj_file, size_t *offset);
-void	make_triangulation(t_buf *buf);
+void		make_triangulation(t_buf *buf);
 
-void	fill_output_data(t_obj_data *od);
+void		fill_output_data(t_obj_data *od);
 void		calc_center_offset(t_obj_data *obj);
 
-// VECTORS // TODO:change location??
-void	push_back(t_buf *buf, void *data);
-void	buf_init(t_buf *buf, size_t size);
-void	*get_value(t_buf *buf, size_t index);
-size_t	get_index(t_buf *buf, void *find);
-void	buf_free(t_buf *buf);
+void		push_back(t_buf *buf, void *data);
+void		buf_init(t_buf *buf, size_t size);
+void		*get_value(t_buf *buf, size_t index);
+size_t		get_index(t_buf *buf, void *find);
+void		buf_free(t_buf *buf);
 
-#endif //PARSING_H
+#endif
