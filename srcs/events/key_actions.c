@@ -35,19 +35,52 @@ static void	process_keys_drawing(t_scop *scop)
 	}
 }
 
+static void	process_render_type(t_scop *scop)
+{
+	if (scop->keys.render_triangles)
+	{
+		scop->keys.render_triangles = 0;
+		scop->state.shading_type = 0;
+	}
+	if (scop->keys.render_texture)
+	{
+		scop->keys.render_texture = 0;
+		scop->state.shading_type = 1;
+	}
+	if (scop->keys.render_light)
+	{
+		scop->keys.render_light = 0;
+		scop->state.shading_type = 2;
+	}
+	if (scop->keys.render_textured_light)
+	{
+		scop->keys.render_textured_light = 0;
+		scop->state.shading_type = 3;
+	}
+}
+
+
 void		process_keys(t_scop *scop)
 {
 	process_keys_moving(scop);
 	process_keys_drawing(scop);
+	process_render_type(scop);
 	if (scop->keys.enable_rotation)
 	{
 		scop->keys.enable_rotation = 0;
 		scop->state.enable_rotation = !scop->state.enable_rotation;
 	}
-	if (scop->keys.apply_texture)
+	if (scop->keys.move_increase)
 	{
-		scop->keys.apply_texture = 0;
-		scop->state.shading_type = !scop->state.shading_type;
+		scop->keys.move_increase = 0;
+		scop->state.moving_step *= 2;
+	}
+	if (scop->keys.move_decrease)
+	{
+		scop->keys.move_decrease = 0;
+		scop->state.moving_step /= 2;
+		if (scop->state.moving_step < 0.01f)
+			scop->state.moving_step = 0.01f;
 	}
 	// TODO: culling
 }

@@ -14,7 +14,7 @@ static const t_mat4f g_identity_matrix = {
 static void	init_cam_to_clip_matrix(t_mat4f *cam_to_clip)
 {
 	static const float	z_near = 1.f;
-	static const float	z_far = 450.f;
+	static const float	z_far = 4500.f;
 	static const float	fov_deg = 45.f;
 	float 				frustum_scale;
 

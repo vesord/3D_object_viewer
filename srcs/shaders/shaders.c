@@ -4,7 +4,6 @@
 #include "initialization.h"
 #include "libft.h"
 
-#include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
 

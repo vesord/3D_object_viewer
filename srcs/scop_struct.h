@@ -50,7 +50,12 @@ typedef struct	s_keys
 	int draw_triangles;
 	int draw_lines;
 	int draw_points;
-	int apply_texture;
+	int render_texture;
+	int render_triangles;
+	int render_light;
+	int render_textured_light;
+	int move_increase;
+	int move_decrease;
 	int change_cull; // TODO: add changing culling
 }				t_keys;
 

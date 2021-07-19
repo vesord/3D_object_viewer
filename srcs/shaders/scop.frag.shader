@@ -11,8 +11,11 @@ uniform int shading_type;
 out vec4 output_color;
 
 const vec4 clay_color = vec4(0.71f, 0.42f, 0.31f, 1.f);
-const vec3 light_direction = normalize(vec3(-1.f, -1.f, -1.f));
+const vec4 red_color = vec4(0.99f, 0.01f, 0.01f, 1.f);
+const vec3 light_direction = normalize(vec3(-1.f, 1.f, 1.f));
+
 const vec4 diffuse_intensity = vec4(0.85f, 0.85, 0.85, 1.f);
+const vec4 ambient_intensity = vec4(0.15f, 0.15, 0.15, 1.f);
 
 vec4 display_triangles()
 {
@@ -29,6 +32,8 @@ void main() {
     {
         float cos_angle_incidence = dot(normal_pass, light_direction);
         cos_angle_incidence = clamp(cos_angle_incidence, 0, 1);
-        output_color = (clay_color * diffuse_intensity * cos_angle_incidence);
+        output_color = vec4(1.f, cos_angle_incidence, 0.f, 1.f);
+        output_color = (clay_color * diffuse_intensity * cos_angle_incidence)
+                + (clay_color * ambient_intensity);
     }
 }
