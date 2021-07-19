@@ -11,10 +11,10 @@ static void	init_shaders(t_shaders *shaders)
 
 	shaders->count = total_shaders_count;
 	shaders->arr = malloc(sizeof(*shaders->arr) * shaders->count);
-	if (!shaders->arr)
-		init_fail("Not enough memory");
 	shader_vert_src = load_shader("./srcs/shaders/scop.vert.shader");
 	shader_frag_src = load_shader("./srcs/shaders/scop.frag.shader");
+	if (!shader_frag_src || !shader_vert_src || !shaders->arr)
+		init_fail("Not enough memory");
 	shaders->arr[0] = create_shader_program_vert_frag(shader_vert_src,
 													  shader_frag_src);
 	free(shader_vert_src);

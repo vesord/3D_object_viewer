@@ -50,11 +50,13 @@ char	*load_shader(const char *filename)
 
 	if ( (file = fopen(filename, "r")) == NULL)
 		init_fail("Cant open shader src");
-	src = calloc(1, 1); // TODO: protect
+	if (!(src = calloc(1, 1)))
+		return NULL;
 	buf_len = 0;
 	while (getline(&line, &buf_len, file) >= 0)
 	{
-		tmp = ft_strjoin(src, line); // TODO: protect
+		if (!(tmp = ft_strjoin(src, line)))
+			return NULL;
 		free(src);
 		src = tmp;
 		free(line);
