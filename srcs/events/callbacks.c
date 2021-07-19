@@ -1,5 +1,6 @@
 #include "scop.h"
 #include "events_private.h"
+#include "calculations.h"
 
 static void	set_moving_keys(int key, int set_value, t_keys *keys)
 {
@@ -68,8 +69,52 @@ void		reshape_callback(GLFWwindow* w, int width, int height) {
 	glViewport(0, 0, width, height);
 }	// TODO: add reshape management
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+
+	}
+}
+
+static const t_vec3f xz_normal = {.x = 0.f, .y = 1.f, .z = 0.f};
+static const t_vec3f yz_normal = {.x = 1.f, .y = 0.f, .z = 0.f};
+
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	static const double	rads_per_pixel = 2 * 3.14159265 / 800.;
+	static double		prev_xpos;
+	static double		prev_ypos;
+	int					state;
+
+	state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS)
+	{
+		mat_rotate_around(&get_scop(NULL)->mat.transf.rotate,
+						  &xz_normal,
+						  (float)((-prev_xpos + xpos) * rads_per_pixel));
+		mat_rotate_around(&get_scop(NULL)->mat.transf.rotate,
+						  &yz_normal,
+						  (float)((-prev_ypos + ypos) * rads_per_pixel));
+	}
+	prev_xpos = xpos;
+	prev_ypos = ypos;
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	t_vec3f scroll_translation;
+
+	scroll_translation.x = 0;
+	scroll_translation.y = 0;
+	scroll_translation.z = (float)yoffset * get_scop(NULL)->state.moving_step;
+	translate(&get_scop(NULL)->mat.transf.translate, &scroll_translation);
+}
+
 void		register_callbacks(GLFWwindow *window)
 {
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetWindowSizeCallback(window, reshape_callback);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 }
