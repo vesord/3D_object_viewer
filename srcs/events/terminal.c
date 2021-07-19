@@ -50,7 +50,7 @@ void term_open_texture(const char *filename)
 		format = GL_BGR;
 		if (scop->bmp->bmi.bpp == 32)
 			format = GL_BGRA;
-		glBindTexture (GL_TEXTURE_2D, scop->texture_obj);	// TODO: change format depending on bmp file
+		glBindTexture (GL_TEXTURE_2D, scop->texture_obj);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, scop->bmp->bmi.width,
 					 scop->bmp->bmi.height, 0, format,
 					 GL_UNSIGNED_BYTE, scop->bmp->data);
