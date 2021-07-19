@@ -25,9 +25,11 @@ void	display(t_scop scop)
 	get_scop(&scop);
 	while(!glfwWindowShouldClose(scop.window))
 	{
+		glClearColor(scop.state.fill_color.x, scop.state.fill_color.y,
+					 scop.state.fill_color.z, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 		poll_terminal();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		process_keys(&scop);
 		if (!scop.obj)
 			continue ;

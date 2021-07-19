@@ -56,6 +56,8 @@ typedef struct	s_keys
 	int render_textured_light;
 	int move_increase;
 	int move_decrease;
+	int fill_color_increase;
+	int fill_color_decrease;
 	int change_cull; // TODO: add changing culling
 }				t_keys;
 
@@ -63,9 +65,10 @@ typedef struct	s_states
 {
 	int		enable_rotation;
 	GLenum	draw_type;
-	GLenum	culling;
-	float	moving_step; // TODO: add step change
+	GLenum	culling; // TODO: add changing culling
+	float	moving_step;
 	int		shading_type;
+	t_vec3f	fill_color;
 }				t_states;
 
 typedef struct	s_scop
@@ -73,7 +76,7 @@ typedef struct	s_scop
 	GLFWwindow		*window;
 	t_shaders		shaders;
 	t_buf_objects	bufs;
-	t_obj_data		*obj; // TODO: change to stack memory?
+	t_obj_data		*obj;
 	t_bmp_data		*bmp;
 	GLuint			texture_obj;
 	t_matrices		mat;
@@ -81,5 +84,4 @@ typedef struct	s_scop
 	t_states		state;
 }				t_scop;
 
-
-#endif //SCOP_SCOP_STRUCT_H
+#endif

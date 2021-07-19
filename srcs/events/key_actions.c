@@ -59,12 +59,37 @@ static void	process_render_type(t_scop *scop)
 	}
 }
 
+static void	process_fill_color(t_scop *scop)
+{
+	if (scop->keys.fill_color_increase)
+	{
+		scop->keys.fill_color_increase = 0;
+		if (scop->state.fill_color.x <= 0.9f)
+		{
+			scop->state.fill_color.x += 0.1f;
+			scop->state.fill_color.y += 0.1f;
+			scop->state.fill_color.z += 0.1f;
+		}
+	}
+	if (scop->keys.fill_color_decrease)
+	{
+		scop->keys.fill_color_decrease = 0;
+		if (scop->state.fill_color.x >= 0.1f)
+		{
+			scop->state.fill_color.x -= 0.1f;
+			scop->state.fill_color.y -= 0.1f;
+			scop->state.fill_color.z -= 0.1f;
+		}
+	}
+}
+
 
 void		process_keys(t_scop *scop)
 {
 	process_keys_moving(scop);
 	process_keys_drawing(scop);
 	process_render_type(scop);
+	process_fill_color(scop);
 	if (scop->keys.enable_rotation)
 	{
 		scop->keys.enable_rotation = 0;
@@ -82,5 +107,4 @@ void		process_keys(t_scop *scop)
 		if (scop->state.moving_step < 0.01f)
 			scop->state.moving_step = 0.01f;
 	}
-	// TODO: culling
 }

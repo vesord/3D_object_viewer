@@ -51,15 +51,20 @@ static void	init_keys(t_keys *keys)
 	keys->render_textured_light = 0;
 	keys->move_decrease = 0;
 	keys->move_increase = 0;
+	keys->fill_color_decrease = 0;
+	keys->fill_color_increase = 0;
 }
 
 static void	init_states(t_states *states)
 {
+	static const t_vec3f initial_fill_color = {.x = 0.1f, .y = 0.1f, .z = 0.1f};
+
 	states->enable_rotation = 1;
 	states->culling = GL_FRONT;
 	states->draw_type = GL_TRIANGLES;
 	states->moving_step = 0.1f;
 	states->shading_type = 0;
+	states->fill_color = initial_fill_color;
 }
 
 static void	init_textures(t_scop *scop)

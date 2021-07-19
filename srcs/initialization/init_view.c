@@ -8,7 +8,7 @@ void init_viewport(GLFWwindow *window)
 
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
-	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 }
 
 void init_culling()

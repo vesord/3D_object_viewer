@@ -28,6 +28,18 @@ static void	set_drawing_keys(int key, int set_value, t_keys *keys)
 		keys->draw_triangles = set_value;
 }
 
+static void set_rendering_keys(int key, int set_value, t_keys *keys)
+{
+	if (key == GLFW_KEY_T)
+		get_scop(NULL)->keys.render_texture = set_value;
+	if (key == GLFW_KEY_R)
+		get_scop(NULL)->keys.render_triangles = set_value;
+	if (key == GLFW_KEY_Y)
+		get_scop(NULL)->keys.render_light = set_value;
+	if (key == GLFW_KEY_U)
+		get_scop(NULL)->keys.render_textured_light = set_value;
+}
+
 void 		key_callback(GLFWwindow* w, int key, int scancode,
 						  int action, int mode) {
 	int		set_value;
@@ -37,22 +49,17 @@ void 		key_callback(GLFWwindow* w, int key, int scancode,
 		set_value = 1;
 	set_moving_keys(key, set_value, &get_scop(NULL)->keys);
 	set_drawing_keys(key, set_value, &get_scop(NULL)->keys);
-	if (key == GLFW_KEY_C)
-		get_scop(NULL)->keys.change_cull = set_value;
+	set_rendering_keys(key, set_value, &get_scop(NULL)->keys);
 	if (key == GLFW_KEY_SPACE)
 		get_scop(NULL)->keys.enable_rotation = set_value;
-	if (key == GLFW_KEY_T)
-		get_scop(NULL)->keys.render_texture = set_value;
-	if (key == GLFW_KEY_R)
-		get_scop(NULL)->keys.render_triangles = set_value;
-	if (key == GLFW_KEY_Y)
-		get_scop(NULL)->keys.render_light = set_value;
-	if (key == GLFW_KEY_U)
-		get_scop(NULL)->keys.render_textured_light = set_value;
 	if (key == GLFW_KEY_1)
 		get_scop(NULL)->keys.move_decrease = set_value;
 	if (key == GLFW_KEY_2)
 		get_scop(NULL)->keys.move_increase = set_value;
+	if (key == GLFW_KEY_3)
+		get_scop(NULL)->keys.fill_color_decrease = set_value;
+	if (key == GLFW_KEY_4)
+		get_scop(NULL)->keys.fill_color_increase = set_value;
 	if (key == GLFW_KEY_ESCAPE)
 		glfwSetWindowShouldClose(w, GL_TRUE);
 }
