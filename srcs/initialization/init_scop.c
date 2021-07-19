@@ -2,19 +2,23 @@
 #include "scop_struct.h"
 #include "initialization_private.h"
 #include "shaders.h"
-#include "vertexShaders.h"
-#include "fragmentShaders.h" // TODO: check norm if const char in .h file
 
 static void	init_shaders(t_shaders *shaders)
 {
-	static const int total_shaders_count = 1;
+	static const int	total_shaders_count = 1;
+	char			*shader_vert_src;
+	char			*shader_frag_src;
 
 	shaders->count = total_shaders_count;
 	shaders->arr = malloc(sizeof(*shaders->arr) * shaders->count);
 	if (!shaders->arr)
 		init_fail("Not enough memory");
-	shaders->arr[0] = create_shader_program_vert_frag(vertex_shader_pass_vtn,
-													  fragment_shader_pass_vtn);
+	shader_vert_src = load_shader("./srcs/shaders/scop.vert.shader");
+	shader_frag_src = load_shader("./srcs/shaders/scop.frag.shader");
+	shaders->arr[0] = create_shader_program_vert_frag(shader_vert_src,
+													  shader_frag_src);
+	free(shader_vert_src);
+	free(shader_frag_src);
 	shaders->cur = shaders->arr[0];
 	glUseProgram(shaders->cur);
 	update_uniforms_locations(shaders);

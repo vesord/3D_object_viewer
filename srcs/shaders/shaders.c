@@ -2,6 +2,11 @@
 #include "scop_struct.h"
 #include "shader_private.h"
 #include "initialization.h"
+#include "libft.h"
+
+#include <fcntl.h>
+#include <string.h>
+#include <stdio.h>
 
 void	update_uniforms_locations(t_shaders *shaders)
 {
@@ -34,6 +39,29 @@ GLuint	create_shader_program(GLuint *shader_list) {
 		init_fail("Failed to create shader program");
 	free_shaders(shader_program, shader_list);
 	return shader_program;
+}
+
+char	*load_shader(const char *filename)
+{
+	FILE*	file;
+	size_t	buf_len;
+	char	*src;
+	char	*line;
+	char	*tmp;
+
+	if ( (file = fopen(filename, "r")) == NULL)
+		init_fail("Cant open shader src");
+	src = calloc(1, 1); // TODO: protect
+	buf_len = 0;
+	while (getline(&line, &buf_len, file) >= 0)
+	{
+		tmp = ft_strjoin(src, line); // TODO: protect
+		free(src);
+		src = tmp;
+		free(line);
+		line = NULL;
+	}
+	return (src);
 }
 
 GLuint	create_shader_program_vert_frag(const char *vert_shader_src,
