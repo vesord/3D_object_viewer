@@ -41,7 +41,6 @@ static void	init_keys(t_keys *keys)
 	keys->up = 0;
 	keys->down = 0;
 	keys->enable_rotation = 0;
-	keys->change_cull = 0;
 	keys->draw_points = 0;
 	keys->draw_lines = 0;
 	keys->draw_triangles = 0;
@@ -60,7 +59,6 @@ static void	init_states(t_states *states)
 	static const t_vec3f initial_fill_color = {.x = 0.1f, .y = 0.1f, .z = 0.1f};
 
 	states->enable_rotation = 1;
-	states->culling = GL_FRONT;
 	states->draw_type = GL_TRIANGLES;
 	states->moving_step = 0.1f;
 	states->shading_type = 0;

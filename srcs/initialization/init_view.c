@@ -13,8 +13,7 @@ void init_viewport(GLFWwindow *window)
 
 void init_culling()
 {
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	glDisable(GL_CULL_FACE);
 	glFrontFace(GL_CW);
 }
 

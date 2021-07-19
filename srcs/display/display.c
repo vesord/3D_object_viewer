@@ -4,15 +4,6 @@
 
 #include <stdio.h>
 
-t_scop		*get_scop(t_scop* scop_ptr)
-{
-	static t_scop *scop;
-
-	if (!scop && scop_ptr)
-		scop = scop_ptr;
-	return scop;
-}
-
 static void	apply_uniforms(t_scop *scop)
 {
 	glUniformMatrix4fv(scop->shaders.model_to_cam_unif, 1, GL_FALSE,
@@ -47,7 +38,6 @@ static void check_opengl_errors()
 
 void		display(t_scop *scop)
 {
-	get_scop(scop);
 	while(!glfwWindowShouldClose(scop->window))
 	{
 		glClearColor(scop->state.fill_color.x, scop->state.fill_color.y,
