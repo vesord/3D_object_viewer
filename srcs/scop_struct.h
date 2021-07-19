@@ -58,14 +58,12 @@ typedef struct	s_keys
 	int move_decrease;
 	int fill_color_increase;
 	int fill_color_decrease;
-	int change_cull; // TODO: add changing culling
 }				t_keys;
 
 typedef struct	s_states
 {
 	int		enable_rotation;
 	GLenum	draw_type;
-	GLenum	culling; // TODO: add changing culling
 	float	moving_step;
 	int		shading_type;
 	t_vec3f	fill_color;
