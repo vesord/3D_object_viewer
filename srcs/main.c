@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	}
 
 	// TODO: add help message
-	display(scop);
+	display(&scop);
 	glfwTerminate();
 	return 0;
 }

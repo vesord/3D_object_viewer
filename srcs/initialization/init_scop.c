@@ -29,7 +29,7 @@ static void	init_buf_objects(t_buf_objects *bufs)
 {
 	glGenBuffers(1, &bufs->vbo);
 	glGenBuffers(1, &bufs->ibo);
-	glGenVertexArrays(1, &bufs->vao); // TODO: check if protect?
+	glGenVertexArrays(1, &bufs->vao);
 }
 
 static void	init_keys(t_keys *keys)

@@ -3,6 +3,6 @@
 
 # include "scop.h"
 
-void display(t_scop scop);
+void display(t_scop *scop);
 
 #endif
