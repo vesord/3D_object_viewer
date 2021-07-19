@@ -64,24 +64,14 @@ void 		key_callback(GLFWwindow* w, int key, int scancode,
 		glfwSetWindowShouldClose(w, GL_TRUE);
 }
 
-void		reshape_callback(GLFWwindow* w, int width, int height) {
-	(void)w;
-//	cameraToClipMatrix[0] = frustumScale / ((float)width / (float)height);
-//	cameraToClipMatrix[5] = frustumScale;
-//
-//	glUseProgram(shaderProgram);
-//	glUniformMatrix4fv(cameraToClipMatrixUnif, 1, GL_FALSE, cameraToClipMatrix);
-//	glUseProgram(0);
+void		reshape_callback(GLFWwindow* window, int width, int height) {
+	float	frustum_scale;
+	t_scop	*scop;
 
+	scop = get_scop(NULL);
+	frustum_scale = calc_frustum_scale(45.f);
+	scop->mat.cam_to_clip.x.x = frustum_scale / ((float)width / (float)height);
 	glViewport(0, 0, width, height);
-}	// TODO: add reshape management
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-	{
-
-	}
 }
 
 static const t_vec3f xz_normal = {.x = 0.f, .y = 1.f, .z = 0.f};
