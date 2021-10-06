@@ -42,14 +42,17 @@ SRCS = 	$(SRC_MAIN) \
 
 # libraries
 # lGLEW
-LIB_GLEW = ./glew-2.2.0
+LIB_GLEW = ./glew-2.2.0/lib/libGLEW.a
+LIB_DIR_GLEW = ./glew-2.2.0
 LIB_PATH_GLEW =	./glew-2.2.0/lib
 LIB_INCLUDE_GLEW = ./glew-2.2.0/include
 # lglfw
-LIB_GLFW = ./glfw-3.3.4
+LIB_GLFW = ./glfw-3.3.4/src/libglfw3.a
+LIB_DIR_GLFW = ./glfw-3.3.4
 LIB_PATH_GLFW =	./glfw-3.3.4/src
 LIB_INCLUDE_GLFW =	./glfw-3.3.4/include
 # libft
+LIB_FT = ./libft/libft.a
 LIB_INCLUDE_FT = ./libft
 LIB_PATH_FT = ./libft
 # lother
@@ -57,7 +60,7 @@ LIB_OTHER =
 LIB_PATH_OTHER =
 LIB_INCLUDE_OTHER =
 
-LIBS = $(LIB_GLEW) $(LIB_GLFW)
+LIBS = $(LIB_GLEW) $(LIB_GLFW) $(LIB_FT)
 LIBS_PATH = $(LIB_PATH_GLEW) $(LIB_PATH_GLFW) $(LIB_PATH_FT) $(LIB_PATH_OTHER)
 LIBS_INCLUDE = $(LIB_INCLUDE_GLEW) $(LIB_INCLUDE_GLFW) $(LIB_INCLUDE_FT) $(LIB_INCLUDE_OTHER)
 
@@ -101,32 +104,37 @@ $(NAME): $(LIBS) $(OBJECTS)
 	$(CC) $(FLAGS) $(OBJECTS) $(addprefix -L./, $(LIBS_PATH)) $(addprefix -l, $(LIBS_LINK)) $(addprefix -framework , $(FRAMEWORKS)) -o $(NAME)
 
 $(OBJECTS) : $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-	/bin/echo -n $<
-	$(CC) $(FLAGS) $(addprefix -I./, $(INCLUDES)) -c $< -o $@
-	/bin/bash -c "echo -en \"\033[2K\033[0G\""
+	@/bin/echo -n $<
+	@$(CC) $(FLAGS) $(addprefix -I./, $(INCLUDES)) -c $< -o $@
+	@/bin/bash -c "echo -en \"\033[2K\033[0G\""
 #include $(wildcard $(OBJ_DIR)/*.d $(OBJ_DIR)/*/*.d)
 
-$(LIB_GLFW):
-	unzip $(LIB_GLFW).zip
-	cd $(LIB_GLFW) && cmake . && make
+$(LIB_GLFW): $(LIB_DIR_GLFW)
+	cd $(LIB_DIR_GLFW) && cmake . && make
 
-$(LIB_GLEW):
-	unzip $(LIB_GLEW).zip
-	cd $(LIB_GLEW) && make glew.lib.static
+$(LIB_DIR_GLFW):
+	unzip $(LIB_DIR_GLFW).zip
+
+$(LIB_GLEW): $(LIB_DIR_GLEW)
+	cd $(LIB_DIR_GLEW) && make glew.lib.static
+
+$(LIB_DIR_GLEW):
+	unzip $(LIB_DIR_GLEW).zip
+
+
+$(LIB_FT):
+	@cd $(LIB_PATH_FT) && make
 
 .PHONY: clean
 clean:
+	@cd $(LIB_PATH_FT) && make clean
 	@rm -rf $(OBJ_DIR)
 
 .PHONY: fclean
 fclean: clean
+	@cd $(LIB_PATH_FT) && make fclean
 	@rm -rf $(LIBS)
 	@rm -rf $(NAME)
 
 .PHONY: re
 re: fclean all
-
-.PHONY: test
-test:
-	@echo "OBJECTS: "
-	@echo $(OBJECTS)
