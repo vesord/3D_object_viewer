@@ -57,6 +57,10 @@ int			parse_int_lt(const char *str, t_obj_data *obj_file, size_t *offset)
 	char	*end_ptr;
 
 	convert_res = strtol(str, &end_ptr, 10);
+	if (errno) {
+        convert_res = 0;
+        errno = 0;
+	}
 	if (convert_res >= INT32_MAX || convert_res <= INT32_MIN || errno)
 		obj_file->err_type = ERR_PARSING_OBJ_LINE_TYPE_F;
 	*offset += end_ptr - str;

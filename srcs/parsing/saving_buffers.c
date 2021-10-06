@@ -17,6 +17,9 @@ static void	realloc_if_need(t_buf *buf)
 		buf->buf_size *= 2;
 		buf->data = realloc(buf->data, buf->buf_size);
 	}
+	if (errno == EINVAL) {
+		errno = 0;
+	}
 }
 
 void		*get_value(t_buf *buf, size_t index)

@@ -55,11 +55,16 @@ void parse_lines(const char *fname, FILE *file, t_obj_data *obj_file)
 	errno = 0;
 	while (getline(&line, &line_buf, file) >= 0)
 	{
+	    if (errno) {
+            fprintf(stderr, "Getline destroyed errno");
+	    }
 		if (parse_line(line, obj_file) != ERR_NO_ERROR)
 			break;
 		free(line);
 		line = NULL;
 		line_n++;
+
+		errno = 0;
 	}
 	if (obj_file->err_type || errno)
 		fprintf(stderr, "Error while parsing file %s in line %lu\n%s\n"
@@ -101,12 +106,13 @@ t_obj_data *parse_obj_file(const char *filename)
 		return NULL;
 	}
 	parse_lines(filename, file, obj_data);
-	if (obj_data->err_type == ERR_NO_ERROR)
-		fill_output_data(obj_data);
+	if (obj_data->err_type == ERR_NO_ERROR) {
+        fill_output_data(obj_data);
+    }
 	if (obj_data->err_type != ERR_NO_ERROR || errno)
 	{
-		fprintf(stderr, "Unable to read file. Error code: %d\n",
-				obj_data->err_type);
+		fprintf(stderr, "Unable to read file. Error code: %d. Errno: %d\n",
+				obj_data->err_type, errno);
 		free_obj(&obj_data);
 		return NULL;
 	}

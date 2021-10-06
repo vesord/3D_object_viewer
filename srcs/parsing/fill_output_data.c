@@ -10,11 +10,11 @@
 */
 static void	fill_buffers(t_obj_data *od)
 {
-	size_t i;
+	int i;
 
-	i = 0;
+	i = -1;
 	errno = 0;
-	while (i < od->ib.count)
+	while (++i < (int)od->ib.count)
 	{
 		push_back(&od->vb_out, get_value(&od->vb, ((t_vec3i*)get_value(&od->ib, i))->x - 1));
 		if (od->has_textures)
@@ -24,7 +24,6 @@ static void	fill_buffers(t_obj_data *od)
 		push_back(&od->ib_out, &i);
 		if (errno)
 			return ;
-		++i;
 	}
 	od->index_buffer_count = i;
 	od->vertex_buffer_count = i;
@@ -140,12 +139,14 @@ static void map_tex_coord_to_xz(t_obj_data *od, t_vec4f *p1, t_vec4f *p2,
 
 static void	gen_texture_locations(t_obj_data *od)
 {
+    int i;
 	t_vec4f *p1;
 	t_vec4f *p2;
 	t_vec4f *p3;
 
 	od->has_textures = 1;
-	for (size_t i = 0; i < od->vertex_buffer_count; i += 3)
+	i = -3;
+	while ((i += 3) < (int)od->vertex_buffer_count)
 	{
 		p1 = get_value(&od->vb_out, i);
 		p2 = get_value(&od->vb_out, i + 1);
@@ -171,15 +172,17 @@ void	fill_output_data(t_obj_data *od)
 	if (od->flt == FACE_LINE_TYPE_VN || od->flt == FACE_LINE_TYPE_VTN)
 		od->has_normals = 1;
 	fill_buffers(od);
-	if (errno)
+	if (errno == ENOMEM)
 		return ;
 	calc_center_offset(od);
 	if (od->has_textures == 0)
 		gen_texture_locations(od);
-	if (errno)
+	if (errno == ENOMEM)
 		return ;
 	join_buffers(od);
-	if (errno)
+	if (errno == ENOMEM)
 		return ;
 	free_resourses(od);
+	if (errno == EINVAL)
+	    errno = 0;
 }
