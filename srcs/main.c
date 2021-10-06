@@ -16,6 +16,10 @@ int			main(int argc, char **argv)
 {
 	t_scop scop;
 
+	// todo: remove it
+	(void)argc;
+	(void)argv;
+
 	initialization(&scop);
 	get_scop(&scop);
 	term_open_obj("./models/42.obj");

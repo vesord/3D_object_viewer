@@ -6,10 +6,10 @@
 #include <math.h>
 
 static const t_mat4f g_identity_matrix = {
-	1.f, 0.f, 0.f, 0.f,
-	0.f, 1.f, 0.f, 0.f,
-	0.f, 0.f, 1.f, 0.f,
-	0.f, 0.f, 0.f, 1.f
+        {1.f, 0.f, 0.f, 0.f,},
+        { 0.f, 1.f, 0.f, 0.f, },
+        { 0.f, 0.f, 1.f, 0.f, },
+        { 0.f, 0.f, 0.f, 1.f },
 };
 
 void get_rot_mat(t_mat4f *rot_mat, t_vec3f vec, GLfloat angle) {

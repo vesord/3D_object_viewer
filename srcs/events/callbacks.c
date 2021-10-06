@@ -31,13 +31,13 @@ static void	set_drawing_keys(int key, int set_value, t_keys *keys)
 static void set_rendering_keys(int key, int set_value, t_keys *keys)
 {
 	if (key == GLFW_KEY_T)
-		get_scop(NULL)->keys.render_texture = set_value;
+		keys->render_texture = set_value;
 	if (key == GLFW_KEY_R)
-		get_scop(NULL)->keys.render_triangles = set_value;
+		keys->render_triangles = set_value;
 	if (key == GLFW_KEY_Y)
-		get_scop(NULL)->keys.render_light = set_value;
+		keys->render_light = set_value;
 	if (key == GLFW_KEY_U)
-		get_scop(NULL)->keys.render_textured_light = set_value;
+		keys->render_textured_light = set_value;
 }
 
 void 		key_callback(GLFWwindow* w, int key, int scancode,

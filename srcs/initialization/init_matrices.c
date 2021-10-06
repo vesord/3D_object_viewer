@@ -5,10 +5,10 @@
 #include <string.h>
 
 static const t_mat4f g_identity_matrix = {
-	1.f, 0.f, 0.f, 0.f,
-	0.f, 1.f, 0.f, 0.f,
-	0.f, 0.f, 1.f, 0.f,
-	0.f, 0.f, 0.f, 1.f
+        {1.f, 0.f, 0.f, 0.f,},
+        {0.f, 1.f, 0.f, 0.f,},
+        {0.f, 0.f, 1.f, 0.f,},
+        {0.f, 0.f, 0.f, 1.f}
 };
 
 static void	init_cam_to_clip_matrix(t_mat4f *cam_to_clip)

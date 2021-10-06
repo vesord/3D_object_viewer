@@ -2,7 +2,19 @@ cmake_minimum_required(VERSION 3.19)
 project(scop C)
 
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_FLAGS)
+#set(CMAKE_C_FLAGS)
+
+
+#IF (APPLE)
+#	SET(GCC_COVERAGE_COMPILE_FLAGS "")
+#	SET(GCC_COVERAGE_LINK_FLAGS "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")
+#	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${COVERAGE_LINK_FLAGS}")
+#ENDIF()
+
+#add_link_options("-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
+
+set(CMAKE_C_FLAGS "-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
+
 #-lpthread -lXrandr -lXi
 
 include_directories(glew-2.2.0/include)
@@ -70,5 +82,8 @@ add_executable(scop ${MAIN_FILES}
 
 target_link_libraries(scop  ${CMAKE_SOURCE_DIR}/glew-2.2.0/lib/libGLEW.a
 							${CMAKE_SOURCE_DIR}/glfw-3.3.4/src/libglfw3.a
-							${CMAKE_SOURCE_DIR}/libft/libft.a
-							GL X11 pthread m dl  )
+							${CMAKE_SOURCE_DIR}/libft/libft.a)
+
+IF(UNIX AND NOT APPLE)
+	target_link_libraries(scop GL X11 pthread m dl)
+ENDIF()

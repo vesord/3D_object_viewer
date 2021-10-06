@@ -10,9 +10,9 @@
 */
 static void	fill_buffers(t_obj_data *od)
 {
-	int i;
+	size_t i;
 
-	i = -1;
+	i = 0;
 	errno = 0;
 	while (++i < od->ib.count)
 	{
@@ -24,6 +24,7 @@ static void	fill_buffers(t_obj_data *od)
 		push_back(&od->ib_out, &i);
 		if (errno)
 			return ;
+		++i;
 	}
 	od->index_buffer_count = i;
 	od->vertex_buffer_count = i;
@@ -139,14 +140,12 @@ static void map_tex_coord_to_xz(t_obj_data *od, t_vec4f *p1, t_vec4f *p2,
 
 static void	gen_texture_locations(t_obj_data *od)
 {
-	int i;
 	t_vec4f *p1;
 	t_vec4f *p2;
 	t_vec4f *p3;
 
 	od->has_textures = 1;
-	i = -3;
-	while ((i += 3) < od->vertex_buffer_count)
+	for (size_t i = 0; i < od->vertex_buffer_count; i += 3)
 	{
 		p1 = get_value(&od->vb_out, i);
 		p2 = get_value(&od->vb_out, i + 1);
