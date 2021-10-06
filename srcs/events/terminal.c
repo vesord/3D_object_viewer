@@ -10,11 +10,25 @@
 
 void term_show_help()
 {
-	fprintf(stdout, "Program for viewing .obj 3D models.\n"
+	fprintf(stdout, "Program for viewing .obj 3D models.\n\n"
 					"commands:\n"
 					"h : show this help\n"
 					"t texture_path : open texture\n"
-					"o object_path : open .obj file\n");
+                    "o object_path : open .obj file\n\n");
+    fprintf(stdout, "Controls:\n"
+                    "mouse with left button pushed : model rotation\n"
+                    "mouse wheel : zoom in/out\n"
+                    "WASD : navigation\n"
+                    "R : shading as triangles\n"
+                    "T : shading as texture\n"
+                    "Y : shading with light (normals required)\n"
+                    "U : shading with light and texture (normals required)\n"
+                    "I : render as dots\n"
+                    "O : render as lines\n"
+                    "P : render as triangles\n"
+                    "1, 2 : increase/decrease zoom speed\n"
+                    "3, 4 : increase/decrease ambient light\n"
+                    "SPACE : stop/resume rotation\n");
 }
 
 void term_open_obj(const char *filename)

@@ -5,17 +5,9 @@ set(CMAKE_C_STANDARD 99)
 #set(CMAKE_C_FLAGS)
 
 
-#IF (APPLE)
-#	SET(GCC_COVERAGE_COMPILE_FLAGS "")
-#	SET(GCC_COVERAGE_LINK_FLAGS "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")
-#	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${COVERAGE_LINK_FLAGS}")
-#ENDIF()
-
-#add_link_options("-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
-
-set(CMAKE_C_FLAGS "-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
-
-#-lpthread -lXrandr -lXi
+IF (APPLE)
+	set(CMAKE_C_FLAGS "-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
+ENDIF()
 
 include_directories(glew-2.2.0/include)
 include_directories(glfw-3.3.4/include)

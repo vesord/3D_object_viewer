@@ -107,7 +107,6 @@ $(OBJECTS) : $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	@/bin/echo -n $<
 	@$(CC) $(FLAGS) $(addprefix -I./, $(INCLUDES)) -c $< -o $@
 	@/bin/bash -c "echo -en \"\033[2K\033[0G\""
-#include $(wildcard $(OBJ_DIR)/*.d $(OBJ_DIR)/*/*.d)
 
 $(LIB_GLFW): $(LIB_DIR_GLFW)
 	cd $(LIB_DIR_GLFW) && cmake . && make
