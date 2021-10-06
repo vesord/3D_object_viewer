@@ -14,7 +14,7 @@ static void	fill_buffers(t_obj_data *od)
 
 	i = 0;
 	errno = 0;
-	while (++i < od->ib.count)
+	while (i < od->ib.count)
 	{
 		push_back(&od->vb_out, get_value(&od->vb, ((t_vec3i*)get_value(&od->ib, i))->x - 1));
 		if (od->has_textures)

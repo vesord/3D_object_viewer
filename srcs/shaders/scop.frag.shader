@@ -1,4 +1,4 @@
-#version 460 core
+#version 410 core
 
 smooth in vec2 texture_pass;
 smooth in vec3 normal_pass;
@@ -19,7 +19,7 @@ const vec4 ambient_intensity = vec4(0.25f, 0.25, 0.25, 1.f);
 
 vec4 display_triangles()
 {
-    const float intense = (vertex_id_pass % 10) / 10.f + 0.05f;
+    float intense = (vertex_id_pass % 10) / 10.f + 0.05f;
     return vec4(intense, intense, intense, 1.f);
 }
 
