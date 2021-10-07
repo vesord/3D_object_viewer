@@ -60,10 +60,18 @@ LIBS = $(LIB_GLEW) $(LIB_GLFW)
 LIBS_PATH = $(LIB_PATH_GLEW) $(LIB_PATH_GLFW) $(LIB_PATH_OTHER)
 LIBS_INCLUDE = $(LIB_INCLUDE_GLEW) $(LIB_INCLUDE_GLFW) $(LIB_INCLUDE_OTHER)
 
-#for linux GLEW glfw3 GL X11 pthread m dl ft
-LIBS_LINK = GLEW glfw3 pthread m dl
-#for macOS cocoa OpenGL IOKit CoreVideo
-FRAMEWORKS = cocoa OpenGL IOKit
+ifeq ($(OS),Windows_NT)
+	LIBS_LINK = something on windows
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		LIBS_LINK = GLEW glfw3 GL X11 pthread m dl
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		LIBS_LINK = GLEW glfw3 pthread m dl
+		FRAMEWORKS = cocoa OpenGL IOKit
+	endif
+endif
 
 # Includes
 INCLUDES =		$(LIBS_INCLUDE) \

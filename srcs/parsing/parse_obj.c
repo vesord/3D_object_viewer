@@ -8,7 +8,7 @@
 ** Order of these functions must be the same as order of
 ** enum e_line_type in parsing_private.h
 */
-const static t_line_type_parser g_lt_parsers[] = {
+static const t_line_type_parser g_lt_parsers[] = {
 	parse_skip_line_type,
 	parse_vertex_line_type,
 	parse_texture_line_type,
