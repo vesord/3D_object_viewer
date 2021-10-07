@@ -5,8 +5,8 @@
 #include "buffers.h"
 #include "calculations.h"
 #include "initialization.h"
-#include "libft.h"
 #include <stdio.h>
+#include <string.h>
 
 void term_show_help()
 {
@@ -95,10 +95,19 @@ void poll_terminal()
 {
 	char	*line;
 	ssize_t	ret;
+	size_t	line_buf;
 
-	ret = get_next_line(0, &line);
+	line = NULL;
+	line_buf = 0;
+	ret = getline(&line, &line_buf, stdin);
 	if (ret <= 0)
-		return ;
+	{
+		return;
+	}
+	if (strlen(line) && line[strlen(line) - 1] == '\n')
+	{
+		line[strlen(line) - 1] = 0;
+	}
 	exec_line(line);
 	free(line);
 }

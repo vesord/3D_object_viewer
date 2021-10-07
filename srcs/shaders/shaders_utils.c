@@ -2,6 +2,7 @@
 #include "initialization.h"
 
 #include <stdio.h>
+#include <string.h>
 
 static const char *g_vertex_shader_type_str = "vertex";
 static const char *g_geometry_shader_type_str = "geometry";
@@ -72,4 +73,33 @@ int		is_shader_program_ok(GLuint shader_program)
 		return 0;
 	}
 	return 1;
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*newstr;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+
+	if (!s1 || !s2)
+		return (NULL);
+	len = strlen(s1) + strlen(s2);
+	newstr = (char *)malloc(sizeof(*newstr) * (len + 1));
+	if (!newstr)
+		return (NULL);
+	newstr[len] = 0;
+	i = 0;
+	while (s1[i])
+	{
+		newstr[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j])
+	{
+		newstr[i + j] = s2[j];
+		j++;
+	}
+	return (newstr);
 }
