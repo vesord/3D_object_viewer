@@ -1,3 +1,10 @@
+TODO: 
+* Preview (screens / video / gif)
+* How to install and launch (mac, linux)
+* How to use
+
+
+
 install glfw https://www.glfw.org/
 
 sudo apt-install libxrandr-dev libxinerama-dev libxcursor-dev
