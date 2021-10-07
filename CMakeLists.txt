@@ -73,8 +73,7 @@ add_executable(scop ${MAIN_FILES}
 					${INIT_FILES})
 
 target_link_libraries(scop  ${CMAKE_SOURCE_DIR}/glew-2.2.0/lib/libGLEW.a
-							${CMAKE_SOURCE_DIR}/glfw-3.3.4/src/libglfw3.a
-							${CMAKE_SOURCE_DIR}/libft/libft.a)
+							${CMAKE_SOURCE_DIR}/glfw-3.3.4/src/libglfw3.a)
 
 IF(UNIX AND NOT APPLE)
 	target_link_libraries(scop GL X11 pthread m dl)

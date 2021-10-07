@@ -2,7 +2,6 @@
 #include "scop_struct.h"
 #include "shader_private.h"
 #include "initialization.h"
-#include "libft.h"
 
 #include <string.h>
 #include <stdio.h>

@@ -51,21 +51,17 @@ LIB_GLFW = ./glfw-3.3.4/src/libglfw3.a
 LIB_DIR_GLFW = ./glfw-3.3.4
 LIB_PATH_GLFW =	./glfw-3.3.4/src
 LIB_INCLUDE_GLFW =	./glfw-3.3.4/include
-# libft
-LIB_FT = ./libft/libft.a
-LIB_INCLUDE_FT = ./libft
-LIB_PATH_FT = ./libft
 # lother
 LIB_OTHER =
 LIB_PATH_OTHER =
 LIB_INCLUDE_OTHER =
 
-LIBS = $(LIB_GLEW) $(LIB_GLFW) $(LIB_FT)
-LIBS_PATH = $(LIB_PATH_GLEW) $(LIB_PATH_GLFW) $(LIB_PATH_FT) $(LIB_PATH_OTHER)
-LIBS_INCLUDE = $(LIB_INCLUDE_GLEW) $(LIB_INCLUDE_GLFW) $(LIB_INCLUDE_FT) $(LIB_INCLUDE_OTHER)
+LIBS = $(LIB_GLEW) $(LIB_GLFW)
+LIBS_PATH = $(LIB_PATH_GLEW) $(LIB_PATH_GLFW) $(LIB_PATH_OTHER)
+LIBS_INCLUDE = $(LIB_INCLUDE_GLEW) $(LIB_INCLUDE_GLFW) $(LIB_INCLUDE_OTHER)
 
 #for linux GLEW glfw3 GL X11 pthread m dl ft
-LIBS_LINK = ft GLEW glfw3 pthread m dl
+LIBS_LINK = GLEW glfw3 pthread m dl
 #for macOS cocoa OpenGL IOKit CoreVideo
 FRAMEWORKS = cocoa OpenGL IOKit
 
@@ -120,18 +116,12 @@ $(LIB_GLEW): $(LIB_DIR_GLEW)
 $(LIB_DIR_GLEW):
 	unzip $(LIB_DIR_GLEW).zip
 
-
-$(LIB_FT):
-	@cd $(LIB_PATH_FT) && make
-
 .PHONY: clean
 clean:
-	@cd $(LIB_PATH_FT) && make clean
 	@rm -rf $(OBJ_DIR)
 
 .PHONY: fclean
 fclean: clean
-	@cd $(LIB_PATH_FT) && make fclean
 	@rm -rf $(LIBS)
 	@rm -rf $(NAME)
 
