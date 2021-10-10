@@ -5,6 +5,8 @@
 
 <img src="https://github.com/vesord/HeavyStuffForOtherRepos/blob/master/obj_viewer/agalia.gif" width="200" height="200" />
 
+More examples [bellow this page](#more-examples)
+
 ## Install and launch
 
 `make`
